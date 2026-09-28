@@ -11,6 +11,17 @@ Usage:
     python3 AIOS/scripts/screentime.py --hours 6.5 [--sleep 7] \
         [--date 2026-09-05] [--note "mostly gaming"]
 
+    One row per date. Logging the same date twice fills in whichever number
+    the row was missing (sleep in the morning, screen time at night) instead
+    of adding a second row that every average would count twice, and a note
+    already on the row is kept — a new note is added after it, never over it.
+
+    A row's date is the day: screen time used that day, and the sleep of the
+    night that STARTED that day (in bed on the 25th -> the 25th). So a sleep
+    number given on its own, with no --date, goes on last night — it's said
+    after waking up. Without --date, a day runs until 04:00 (paths.night()),
+    so something logged at 00:30 lands on the evening it belongs to.
+
     python3 AIOS/scripts/screentime.py --list [--last 14]
     python3 AIOS/scripts/screentime.py --avg [--last 14]   # rolling average
     python3 AIOS/scripts/screentime.py --check             # warning system, silent if fine
@@ -92,8 +103,11 @@ def cmd_add(args) -> int:
             date_str = dt.date.fromisoformat(args.date).isoformat()
         except ValueError:
             fail(f"--date must be YYYY-MM-DD, got {args.date!r}")
+    elif args.sleep is not None and args.hours is None:
+        # "slept 7h", said in the morning, is about the night before.
+        date_str = (P.night() - dt.timedelta(days=1)).isoformat()
     else:
-        date_str = dt.date.today().isoformat()
+        date_str = P.night().isoformat()
 
     # Both cells are independently optional — don't force a guessed number into
     # the one that wasn't actually given. "?" means genuinely unknown, not zero.
@@ -107,10 +121,36 @@ def cmd_add(args) -> int:
         lines = NOTE.read_text(encoding="utf-8").split("\n")
         ensure_section(lines)
         header_idx, last_row_idx = table_bounds(lines)
-        lines.insert(last_row_idx + 1, row)
+        # One row per day. The same date logged twice (sleep in the morning,
+        # screen hours at night) would otherwise be two rows, and every
+        # average would count that day twice. Fill the cell that was given,
+        # keep the one that wasn't.
+        existing = next((i for i in range(header_idx + 2, last_row_idx + 1)
+                         if lines[i].split("|")[1].strip() == date_str), None)
+        if existing is not None:
+            old_cells = [c.strip() for c in lines[existing].split("|")]
+            if args.hours is None and len(old_cells) > 2:
+                hours_cell = old_cells[2]
+            if args.sleep is None and len(old_cells) > 3:
+                sleep_cell = old_cells[3]
+            old_note = old_cells[4] if len(old_cells) > 4 else ""
+            # Never replace a note someone wrote with a later one: the context
+            # in the first note ("travelling, atypical day") is exactly what
+            # a later look at the numbers needs.
+            new_note = safe_cell(args.note)
+            if old_note and new_note and new_note not in old_note:
+                note_cell = f"{old_note}; {new_note}"
+            else:
+                note_cell = old_note or new_note
+            lines[existing] = f"| {date_str} | {hours_cell} | {sleep_cell} | {note_cell} |"
+            row = lines[existing]
+            verb = "updated"
+        else:
+            lines.insert(last_row_idx + 1, row)
+            verb = "logged"
         write_atomic(NOTE, "\n".join(lines))
 
-    print(f"screentime: logged — {row}")
+    print(f"screentime: {verb} — {row}")
     rel = P.relative(NOTE)
     parts = []
     if args.hours is not None:

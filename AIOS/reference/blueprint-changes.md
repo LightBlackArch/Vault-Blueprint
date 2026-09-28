@@ -57,6 +57,20 @@ are.
 
 ## Changes
 
+### id: screentime-one-row-per-day
+title: Screen time and sleep keep one row per day, and a sleep number said in the morning goes on last night
+files: AIOS/scripts/screentime.py, AIOS/scripts/paths.py
+needs: nothing
+
+Telling your AI your sleep in the morning and your screen time that evening
+used to give the same day two rows, and every average then counted that day
+twice. Now the second number fills in the empty half of the row that's already
+there, and any note already on that row is kept, with the new note added after
+it. A sleep number said on its own ("slept 7 hours") is filed on the night
+before, because that's the night you actually slept. And anything logged after
+midnight but before 4 a.m. counts for the evening before, not for a day that
+has barely started.
+
 ### id: video-transcripts
 title: Videos you send actually get watched, not guessed at from the thumbnail
 files: AIOS/scripts/video.py, AIOS/scripts/hook-video.py, AIOS/vault-map.md, AIOS/skill-map.md

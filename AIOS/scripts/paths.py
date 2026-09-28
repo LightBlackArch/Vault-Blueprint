@@ -166,6 +166,21 @@ def _as_date(d) -> _dt.date:
     return _dt.date.fromisoformat(str(d).strip())
 
 
+# For logging, a day runs until 04:00, not midnight. Something logged at 00:30
+# ("two hours of screen time tonight") belongs to the evening it happened in,
+# not to a day that has barely started. Scripts that keep one row per day use
+# night() as their default date instead of date.today(). Change the hour here
+# if your days end earlier or later.
+ROLLOVER_H = 4
+
+
+def night(now=None) -> _dt.date:
+    """The day a log entry belongs to when no date was given: today, except
+    between midnight and ROLLOVER_H o'clock, when it is still yesterday."""
+    now = now or _dt.datetime.now()
+    return (now - _dt.timedelta(hours=ROLLOVER_H)).date()
+
+
 def daily_note(d) -> Path:
     """Canonical path for a day's note: Calendar/Daily/YYYY-MM-DD.md."""
     return DAILY / f"{_as_date(d).isoformat()}.md"
