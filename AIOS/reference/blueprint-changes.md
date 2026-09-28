@@ -71,6 +71,20 @@ before, because that's the night you actually slept. And anything logged after
 midnight but before 4 a.m. counts for the evening before, not for a day that
 has barely started.
 
+### id: age-stays-current
+title: The age written in your me.md keeps itself up to date
+files: AIOS/scripts/facts-check.py, AIOS/reference/routines.md, AIOS/skill-map.md
+needs: nothing
+
+Your `me.md` says how old you are, and that number quietly becomes wrong on
+your next birthday. Nothing re-checks it, so an AI reading the file keeps
+repeating the old age with full confidence. This adds a small check that reads
+the birth date you already wrote in `me.md`, works out your age from today's
+real date, and corrects that one number when it's out of date, with a line in
+today's change log saying so. It never touches anything else in the file, and
+until a full birth date (day, month and year) is written there, it does nothing
+and says why. Run it yourself any time, or let the daily brief run it.
+
 ### id: video-transcripts
 title: Videos you send actually get watched, not guessed at from the thumbnail
 files: AIOS/scripts/video.py, AIOS/scripts/hook-video.py, AIOS/vault-map.md, AIOS/skill-map.md

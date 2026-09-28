@@ -228,6 +228,21 @@ Greps the whole vault for stale wording after a repeated fact gets a row in
 more than one note — `logchange.py` also runs it automatically whenever
 `canon.md` itself is touched.
 
+## `facts-check` — facts that go stale with the calendar
+
+```
+python3 AIOS/scripts/facts-check.py --check   # fix drift, print what changed
+python3 AIOS/scripts/facts-check.py --list    # every fact's value today, writes nothing
+```
+
+Recomputes facts that are pure functions of today's date — for now just your
+age, from the birth date on the `Born` line of `AIOS/me.md` — and fixes that
+one number in place when it's out of date, with a receipt in today's
+`## Changes`. Nothing else in the file is touched. Prints `UNARMED` and does
+nothing until that line holds a full date (DD.MM.YYYY). The daily brief runs
+it every morning. `canon-check` above is the other half: it catches a fact
+that was corrected in one note but not in the others.
+
 ## `relocate` — moving or renaming anything
 
 ```

@@ -96,6 +96,7 @@ at session start.
 | `update-vault` | "update my vault from the blueprint" | Pulls in blueprint improvements as yes/no questions. Never overwrites your writing. |
 | `setup-check` | On request, especially after setup | One pass/fail table — is the automation actually working. |
 | `canon-check` | `canon.md` touched (immediate) | Finds notes still repeating a corrected fact. |
+| `facts-check` | Every morning inside `daily-brief`, or on request | `python3 AIOS/scripts/facts-check.py --check` — keeps facts that change with the date current (your age in `me.md`), fixing that one number in place and logging it. `UNARMED` until a full birth date is written. `--list` shows the values without writing. |
 | `stale-check` | Weekly (if scheduled), or on request | EXPIRED / ORPHAN / NO ROUTE report. |
 | `changelog-check` | Timer, if scheduled | Catches a write with no `## Changes` receipt. |
 | `project-status <project>` | On request | Where it stands, what's blocking it, next action. |
