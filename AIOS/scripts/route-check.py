@@ -370,7 +370,7 @@ ASPECTS = set(ASPECT_GROUPS)
 NAME_NOISE = {"my", "the", "a", "an", "for", "on", "in", "of", "and", "to",
               "with", "from", "at"}
 
-ROOT_OK = {"Home.md", "CLAUDE.md", "Random.md", "README.md"}
+ROOT_OK = {"Home.md", "CLAUDE.md", "AGENTS.md", "Random.md", "README.md"}
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 WEEK_RE = re.compile(r"^\d{4}-W\d{2}$")
 PLACEHOLDER = ("pasted image", "untitled", "new note", "document")

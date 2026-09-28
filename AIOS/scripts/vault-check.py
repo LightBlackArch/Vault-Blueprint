@@ -192,8 +192,12 @@ def main():
     # ---- 6. frontmatter
     for p in md:
         rel = os.path.relpath(p, VAULT)
-        if rel.startswith("AIOS") or rel == "claude.md" or rel == "CLAUDE.md":
-            continue  # AIOS layer is instructions, not notes
+        # The AIOS layer is instructions, not notes. So are the entry points
+        # at the root: AI tools (CLAUDE.md, AGENTS.md) and GitHub's front page
+        # (README.md) read them raw, where a YAML header is only clutter.
+        if rel.startswith("AIOS") or rel in ("claude.md", "CLAUDE.md",
+                                             "AGENTS.md", "README.md"):
+            continue
         t = read(p)
         if not t.startswith("---"):
             flag("NO FRONTMATTER", rel)

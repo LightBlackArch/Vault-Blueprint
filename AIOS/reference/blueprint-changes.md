@@ -57,6 +57,23 @@ are.
 
 ## Changes
 
+### id: fresh-vault-checks-clean
+title: The vault's own health checks stop reporting problems that aren't real
+files: AIOS/scripts/vault-check.py, AIOS/scripts/stale-check.py, AIOS/scripts/route-check.py, AIOS/scripts/person.py, Atlas/People/People.md
+needs: nothing
+
+On a brand-new copy, the integrity check reported two problems before you had
+written a single note: the People index linked to two notes ("Family",
+"Friends and social") that setup never creates, and the vault's front-page
+`README.md` lacked the small header block that ordinary notes carry. Neither
+was a real problem, and a check that complains on day one teaches you to
+ignore it. The People index now links to those two notes only once you have
+them. And the files at the top of the vault that AI tools and GitHub read
+directly (`README.md`, `CLAUDE.md`, the new `AGENTS.md`) are no longer
+treated as notes that are missing a header, missing links, or filed in the
+wrong place. If you've already logged people, nothing in your People index is
+lost: it rebuilds from your own people notes every time someone is logged.
+
 ### id: screentime-one-row-per-day
 title: Screen time and sleep keep one row per day, and a sleep number said in the morning goes on last night
 files: AIOS/scripts/screentime.py, AIOS/scripts/paths.py

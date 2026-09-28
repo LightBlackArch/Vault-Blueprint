@@ -245,7 +245,11 @@ def main():
             continue
         if r.startswith("Calendar" + os.sep):
             continue
-        if r.startswith(os.path.join("AIOS", "templates")) or r == "CLAUDE.md":
+        # Templates are copied, not linked; the root entry points (CLAUDE.md,
+        # AGENTS.md, README.md) are opened directly by tools and people.
+        # None of them is meant to be reached through a wikilink.
+        if r.startswith(os.path.join("AIOS", "templates")) or \
+                r in ("CLAUDE.md", "AGENTS.md", "README.md"):
             continue
         name = os.path.splitext(os.path.basename(p))[0].lower()
         if name not in linked_to:

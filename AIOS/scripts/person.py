@@ -208,14 +208,14 @@ def rebuild_index(quiet=False) -> Path:
         for title, relation, _ in sorted(rows, key=lambda r: r[0].lower()):
             lines.append(f"| [[{title}]] | {relation} |")
         lines.append("")
-    lines += [
-        "## Related",
-        "",
-        "- [[Family]]",
-        "- [[Friends and social]]",
-        "- [[About Me]]",
-        "",
-    ]
+    lines += ["## Related", ""]
+    # `Family` and `Friends and social` are suggested About Me notes, not ones
+    # every vault has. Link them only when they exist: a link to a note that
+    # isn't there is exactly what vault-check reports as broken.
+    for aggregate in ("Family", "Friends and social"):
+        if (P.ABOUT_ME / f"{aggregate}.md").exists():
+            lines.append(f"- [[{aggregate}]]")
+    lines += ["- [[About Me]]", ""]
     new_text = "\n".join(lines).rstrip("\n") + "\n"
     changed = not PEOPLE_INDEX.exists() or PEOPLE_INDEX.read_text(encoding="utf-8") != new_text
     if changed:

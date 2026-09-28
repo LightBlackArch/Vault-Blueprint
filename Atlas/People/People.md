@@ -16,6 +16,4 @@ Nothing from `Privat/` lives here.
 Nobody logged yet. Run `person.py "<Name>" --category family|friend|teacher --relation "..."`.
 ## Related
 
-- [[Family]]
-- [[Friends and social]]
 - [[About Me]]
