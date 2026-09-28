@@ -19,8 +19,14 @@ If it exists, **fill in the Brief section only. Never touch anything below
 
 ## What goes in the brief
 
-Gather what's actually available. Skip sections you have no data for rather than
-writing filler.
+Gather what's actually available. Skip sections for sources that aren't
+connected at all rather than writing filler.
+
+**But a check that failed is not a check that found nothing.** If a connected
+source errors out (mail, calendar, a search), or a script below exits with an
+error, carry on with the rest and write one line saying so — `Email: not
+checked (connector error)`. Never leave that section out as if it were empty:
+"nothing important" and "nothing was looked at" must never read the same.
 
 1. **Weather** — for wherever they live, per `AIOS/me.md`. Search for it; don't
    guess.
@@ -45,6 +51,11 @@ writing filler.
    the brief if it prints `WARN`, `UNARMED`, or `STALE` — silent only on `OK`,
    same no-daily-nag rule as everywhere else in this list. Skip the whole step
    if the note has never been logged to — an unused check has nothing to say.
+9. **Facts that change with the date** — if `AIOS/scripts/facts-check.py`
+   exists, run `python3 AIOS/scripts/facts-check.py --check`. It keeps the age
+   in `AIOS/me.md` current and fixes it itself. Add a line to the brief only
+   if it prints `CORRECTED` (say what changed) or `WARN` (surface it as is).
+   `OK` and `UNARMED` add nothing.
 
 ## After writing
 

@@ -85,6 +85,19 @@ today's change log saying so. It never touches anything else in the file, and
 until a full birth date (day, month and year) is written there, it does nothing
 and says why. Run it yourself any time, or let the daily brief run it.
 
+### id: brief-says-not-checked
+title: The daily brief tells you when it couldn't check something, instead of implying there was nothing
+files: AIOS/skills/daily-brief/SKILL.md
+needs: nothing
+
+If the brief tries to check your email or calendar and the check itself fails
+(the connection errors out, say), it now carries on with everything else and
+writes a short "email: not checked" line, instead of quietly leaving that part
+out. Before, a check that failed and an inbox that was genuinely empty looked
+exactly the same, so you could read "nothing important today" when nothing had
+actually been looked at. It also runs the age check from the change above each
+morning, if you have that one, and only mentions it when it fixed something.
+
 ### id: video-transcripts
 title: Videos you send actually get watched, not guessed at from the thumbnail
 files: AIOS/scripts/video.py, AIOS/scripts/hook-video.py, AIOS/vault-map.md, AIOS/skill-map.md
