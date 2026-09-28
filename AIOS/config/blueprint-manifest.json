@@ -7,7 +7,7 @@
     "system": "Blueprint owns it. Updated in place unless the user edited it, in which case they're asked."
   },
   "_what": "Every file this blueprint ships, and how much of it belongs to the blueprint versus to the person using it. Read by AIOS/scripts/blueprint-update.py. Generated \u2014 do not hand-edit; change the rules in AIOS/scripts/blueprint-manifest.py instead.",
-  "count": 120,
+  "count": 122,
   "files": {
     ".gitignore": {
       "bytes": 727,
@@ -44,6 +44,11 @@
       "class": "setup",
       "sha256": "30b4d41c9791acdd3b4ab43c9c9bcbf1fde3e3b69f4b113b87ea0e2e0720e5b3"
     },
+    "AGENTS.md": {
+      "bytes": 623,
+      "class": "seed",
+      "sha256": "6577bffc493f569ae4a05408bfd0909df1d756bb10f4136d303faf9587d4116d"
+    },
     "AIOS/character.md": {
       "bytes": 3175,
       "class": "seed",
@@ -60,14 +65,14 @@
       "sha256": "f85ebcdedefa494b3e4afabcfdb7e499506237e83d8cb173d81f6a301d6ce267"
     },
     "AIOS/me.md": {
-      "bytes": 9566,
+      "bytes": 9784,
       "class": "brain",
-      "sha256": "6d8565c1783fe409c3b17f73ac738c67f59a568ed12a89a0d4b398cc245cbbd9"
+      "sha256": "0ca582caf44f59677077a202dc45cf4f9ec607a5b9cc39e045238c910f16f8dd"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 23422,
+      "bytes": 28186,
       "class": "system",
-      "sha256": "befeda8475c71a54d69d70ab27c1076fbb3bc243f288c206316fa5c6cc42b374"
+      "sha256": "2d179d7ee7ec3902f7c63d7010c798b28b5150231826d8eb93f82ef7185915e9"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -90,9 +95,9 @@
       "sha256": "2cedc8383db72cf3f2089d9e364f96ee8f2d1a136b306626b7d41cd1e8544a2a"
     },
     "AIOS/reference/routines.md": {
-      "bytes": 12487,
+      "bytes": 13234,
       "class": "system",
-      "sha256": "c4246103cf28befac786d1f0b80c68006e399f94e9fa84c1783115ebe08aeead"
+      "sha256": "85fa244fc5992f87b612e79a92525bb8060e4e9452afef0d046a37ecff5f2cbb"
     },
     "AIOS/reference/setup.md": {
       "bytes": 5594,
@@ -189,6 +194,11 @@
       "class": "system",
       "sha256": "d1ab56b47b60a6d96f1804bfb67c6b63179e7d534c8bd1332398426e7202c44d"
     },
+    "AIOS/scripts/facts-check.py": {
+      "bytes": 7207,
+      "class": "system",
+      "sha256": "dd79d602fa4a88909c3c8a3c8206cb46370635a7757eab1370a05ba2a015e350"
+    },
     "AIOS/scripts/hook-video.py": {
       "bytes": 6952,
       "class": "system",
@@ -235,14 +245,14 @@
       "sha256": "1269ff5db2aef079e997efe564496af265d8224fa3aded2e340cdcf4deba96f5"
     },
     "AIOS/scripts/paths.py": {
-      "bytes": 8702,
+      "bytes": 9350,
       "class": "system",
-      "sha256": "b5356dc5a07efb30afc0af50ea544f50a5d4b77397302fbe799058253bfd4c30"
+      "sha256": "3ec9416710049573df0b6a63bcac88f54e9e8a00e25b5776101683d9d86b30d4"
     },
     "AIOS/scripts/person.py": {
-      "bytes": 13132,
+      "bytes": 13424,
       "class": "system",
-      "sha256": "b5ad9d263418f1c501b00d44c51e01eaf1d474b5fc9e41c30e888ed7a3a77efb"
+      "sha256": "85f1d9989ee4a8c2990a0d1fc4a7d88d6efb8b7276bbb73e2279e7c29c20f01d"
     },
     "AIOS/scripts/project-status.py": {
       "bytes": 4237,
@@ -250,9 +260,9 @@
       "sha256": "32107a495a37135f1e6ff8a915caa3f0dd62216f571646f4d9d685f1723c953e"
     },
     "AIOS/scripts/route-check.py": {
-      "bytes": 26438,
+      "bytes": 26667,
       "class": "system",
-      "sha256": "4947c1776edc8bf336d6c9ada099675b09b97490da233e5681e536f076910273"
+      "sha256": "39dd0bd6113b061fac775afd58794233891d2fd13a5671fb7b8a2b4474abb609"
     },
     "AIOS/scripts/scheduler.py": {
       "bytes": 12692,
@@ -260,9 +270,9 @@
       "sha256": "2bb9f4ed75748134ac1587d03f5c6f99e4a25bd10c193dea941a1cf7115c1f49"
     },
     "AIOS/scripts/screentime.py": {
-      "bytes": 9610,
+      "bytes": 11910,
       "class": "system",
-      "sha256": "1fc6b48e05ff62a7c39c9d2e1da8c266a5557acda5047bfc7dbc15dcc1788070"
+      "sha256": "d8ca9eac46c1a98199261f0873a2a7dbcb3d3dcc77c2d5cf053c1a4396784879"
     },
     "AIOS/scripts/scriptlog.py": {
       "bytes": 3550,
@@ -285,9 +295,9 @@
       "sha256": "3ff40c333d487f5aa616d3b30bd9c8c19f2541f609e8692c3eeb7dc5b746ac4b"
     },
     "AIOS/scripts/stale-check.py": {
-      "bytes": 9440,
+      "bytes": 9773,
       "class": "system",
-      "sha256": "f61287f05c39c33ddc15b370358093be5b60bb0fea465c1e0af54ffc1588d80f"
+      "sha256": "f3d53c492a29cd8a3d5e4b082929b0e1edcf862753d6bc4043c0dede4f643100"
     },
     "AIOS/scripts/taste.py": {
       "bytes": 4822,
@@ -295,9 +305,9 @@
       "sha256": "3d916dfb8ae2c6c89285a132ff10a94fa00e8c736bc4615eafe3ace7e94f4061"
     },
     "AIOS/scripts/vault-check.py": {
-      "bytes": 11296,
+      "bytes": 11549,
       "class": "system",
-      "sha256": "549d0ad33e0912b55b8c46aa17cee1e581d99b0b30b430ed67808c23c0f34099"
+      "sha256": "58cc7fbe82bd01e5666ffa826c8149e9aede36273dbbb58d797c48c3df57db1f"
     },
     "AIOS/scripts/vault-map.py": {
       "bytes": 8509,
@@ -330,9 +340,9 @@
       "sha256": "7a6ba6783a03bd07aa56e7530d715c20f69f5ebc4ab854437ec4ef223334c134"
     },
     "AIOS/skill-map.md": {
-      "bytes": 11916,
+      "bytes": 12244,
       "class": "brain",
-      "sha256": "8c2934c99bf87eece1a4b97e90a5f436032481ba22ac64512b20af79069ec2d4"
+      "sha256": "494dc1b5969e5c9289705a3cc57dbf51e8b4cada8af7d5eb082eff12995fb815"
     },
     "AIOS/skills/README.md": {
       "bytes": 4519,
@@ -345,9 +355,9 @@
       "sha256": "a69e64e612a30508fbdfbd643747695b185ba8675dd58a66988795bce616d5b5"
     },
     "AIOS/skills/daily-brief/SKILL.md": {
-      "bytes": 3700,
+      "bytes": 4448,
       "class": "system",
-      "sha256": "f7c57a8772a06e6d0d194d99b13fc88c52e4a0b052de314c9d115cab151882cc"
+      "sha256": "60988ddc01353df8b43d4dddf8ec1ee2df05d36a1e65f9532089fbdc0990d6ec"
     },
     "AIOS/skills/no-bullshit/SKILL.md": {
       "bytes": 6680,
@@ -480,9 +490,9 @@
       "sha256": "d9c7db113451276885568e6ee4da1d3da685cda4bf33f14d4d442429dad827e2"
     },
     "Atlas/People/People.md": {
-      "bytes": 543,
+      "bytes": 505,
       "class": "seed",
-      "sha256": "56d598114de8726521c8bdfbee41393e38c4aea76de220576c0ea9bd653d0b35"
+      "sha256": "ed48b74941a94aaaabdabc4eed486abff1184c5e5bc975153e55958c6d11d21e"
     },
     "Atlas/Radar.md": {
       "bytes": 627,
@@ -610,5 +620,5 @@
       "sha256": "6741fa9e7f0219b3e79f7c11de2c8011effa7e703f8a88af53bde3e10f54250a"
     }
   },
-  "generated": "2026-09-18T21:31:03"
+  "generated": "2026-09-28T22:16:14"
 }
