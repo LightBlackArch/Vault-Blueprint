@@ -98,6 +98,16 @@ exactly the same, so you could read "nothing important today" when nothing had
 actually been looked at. It also runs the age check from the change above each
 morning, if you have that one, and only mentions it when it fixed something.
 
+### id: me-md-search-before-asking
+title: A new default in your starter file: look it up before asking you what a name means
+files: AIOS/me.md
+needs: nothing
+
+One more line in the "how to work with me" part of `me.md`: when you mention a
+name or a term the AI doesn't recognise, it searches your own notes first, then
+the web, and only asks you if both come up empty. Before, it could spend a
+question, and your time, on something one search would have answered.
+
 ### id: video-transcripts
 title: Videos you send actually get watched, not guessed at from the thumbnail
 files: AIOS/scripts/video.py, AIOS/scripts/hook-video.py, AIOS/vault-map.md, AIOS/skill-map.md
