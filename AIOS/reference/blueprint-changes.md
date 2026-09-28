@@ -71,8 +71,12 @@ ignore it. The People index now links to those two notes only once you have
 them. And the files at the top of the vault that AI tools and GitHub read
 directly (`README.md`, `CLAUDE.md`, the new `AGENTS.md`) are no longer
 treated as notes that are missing a header, missing links, or filed in the
-wrong place. If you've already logged people, nothing in your People index is
-lost: it rebuilds from your own people notes every time someone is logged.
+wrong place. Two more false alarms from right after setup are gone as well:
+the copies of the skills that setup puts in `.claude/skills/` no longer show
+up as fourteen unlinked, unmapped notes, and the example project note no
+longer sets off a "this project isn't in your map" warning on your first save.
+If you've already logged people, nothing in your People index is lost: it
+rebuilds from your own people notes every time someone is logged.
 
 ### id: screentime-one-row-per-day
 title: Screen time and sleep keep one row per day, and a sleep number said in the morning goes on last night

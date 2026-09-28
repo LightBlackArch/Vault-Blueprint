@@ -40,6 +40,7 @@ SKIP_DIRS = {
     ".obsidian",
     ".git",
     ".trash",
+    ".claude",   # setup copies the skills in here; they're not notes
 }
 SKIP_PATHS = (
     os.path.join("AIOS", "history"),

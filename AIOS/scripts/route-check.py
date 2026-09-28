@@ -265,6 +265,10 @@ def unrouted(notes: list[Path]) -> list[str]:
         r = rel(p)
         if not r.startswith(MUST_ROUTE) or r in MUST_ROUTE_EXEMPT:
             continue
+        # The fake EXAMPLE notes are there to be read once and deleted; a
+        # route row for one would send the next session to a note that's gone.
+        if p.name.startswith("EXAMPLE "):
+            continue
         if p.stem.lower() not in map_text:
             out.append(r)
     return out
