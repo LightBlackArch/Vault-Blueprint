@@ -108,6 +108,18 @@ name or a term the AI doesn't recognise, it searches your own notes first, then
 the web, and only asks you if both come up empty. Before, it could spend a
 question, and your time, on something one search would have answered.
 
+### id: agents-md-pointer
+title: AI tools other than Claude can find your vault's instructions too
+files: AGENTS.md
+needs: nothing
+
+Some AI tools that aren't Claude, OpenAI's Codex for one, look for a file
+called `AGENTS.md` when they open a folder, and never look at `CLAUDE.md`. This
+adds that file to the top of your vault: a few lines telling any such tool to
+read `CLAUDE.md` and follow it. A different AI then starts up the same way
+Claude does, and there's still only one copy of the real instructions to keep
+current. If you only ever use Claude, it does nothing, and deleting it is fine.
+
 ### id: video-transcripts
 title: Videos you send actually get watched, not guessed at from the thumbnail
 files: AIOS/scripts/video.py, AIOS/scripts/hook-video.py, AIOS/vault-map.md, AIOS/skill-map.md
