@@ -81,7 +81,7 @@ from pathlib import Path
 
 VAULT = Path(__file__).resolve().parent.parent.parent
 
-DEFAULT_REPO = "https://github.com/eduardkuncek-crypto/Vault-Blueprint"
+DEFAULT_REPO = "https://github.com/LightBlackArch/Vault-Blueprint"
 DEFAULT_BRANCH = "main"
 
 STATE_PATH = VAULT / "AIOS" / "config" / "blueprint-state.json"

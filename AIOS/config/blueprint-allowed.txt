@@ -19,7 +19,7 @@ LICENSE :: kuncek
 # The repo URL. A self-updating project has to know where it lives, and the
 # GitHub username is part of the URL. There is no way around this and it
 # leaks nothing that isn't already public the moment someone opens the repo.
-* :: eduardkuncek-crypto
+* :: (eduardkuncek-crypto|LightBlackArch)
 * :: github\.com/eduardkuncek
 
 # The updater ships the fallback path to the private vault's deny list so it

@@ -221,7 +221,7 @@ then carry on from §1:
 mkdir -p AIOS/scripts AIOS/config AIOS/reference
 python3 - <<'PY'
 import urllib.request, pathlib
-base = "https://raw.githubusercontent.com/eduardkuncek-crypto/Vault-Blueprint/main/"
+base = "https://raw.githubusercontent.com/LightBlackArch/Vault-Blueprint/main/"
 for f in ("AIOS/scripts/blueprint-update.py",
           "AIOS/scripts/blueprint-manifest.py"):
     p = pathlib.Path(f); p.parent.mkdir(parents=True, exist_ok=True)

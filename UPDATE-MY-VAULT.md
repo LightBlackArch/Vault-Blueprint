@@ -40,8 +40,8 @@ everything else depends on it.
 and save them into my vault at the same paths:
 
 ```
-https://raw.githubusercontent.com/eduardkuncek-crypto/Vault-Blueprint/main/AIOS/scripts/blueprint-update.py
-https://raw.githubusercontent.com/eduardkuncek-crypto/Vault-Blueprint/main/AIOS/scripts/blueprint-manifest.py
+https://raw.githubusercontent.com/LightBlackArch/Vault-Blueprint/main/AIOS/scripts/blueprint-update.py
+https://raw.githubusercontent.com/LightBlackArch/Vault-Blueprint/main/AIOS/scripts/blueprint-manifest.py
 ```
 
 → `AIOS/scripts/blueprint-update.py` and `AIOS/scripts/blueprint-manifest.py`
@@ -51,7 +51,7 @@ If you can run shell commands, this one line does it:
 ```bash
 mkdir -p AIOS/scripts AIOS/config AIOS/reference && python3 - <<'PY'
 import urllib.request, pathlib
-base = "https://raw.githubusercontent.com/eduardkuncek-crypto/Vault-Blueprint/main/"
+base = "https://raw.githubusercontent.com/LightBlackArch/Vault-Blueprint/main/"
 for f in ("AIOS/scripts/blueprint-update.py", "AIOS/scripts/blueprint-manifest.py"):
     p = pathlib.Path(f); p.parent.mkdir(parents=True, exist_ok=True)
     p.write_bytes(urllib.request.urlopen(base + f).read())
@@ -77,7 +77,7 @@ copy of a script that's supposed to update itself is worse than not having it.
 path (`AIOS/skills/update-vault/SKILL.md`):
 
 ```
-https://raw.githubusercontent.com/eduardkuncek-crypto/Vault-Blueprint/main/AIOS/skills/update-vault/SKILL.md
+https://raw.githubusercontent.com/LightBlackArch/Vault-Blueprint/main/AIOS/skills/update-vault/SKILL.md
 ```
 
 Then make it actually active for the tool I'm using:
