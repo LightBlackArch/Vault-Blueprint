@@ -55,9 +55,9 @@
       "sha256": "01bd2177b1cbc79b051d8fee8731da767e1b905ed507f010eb4902348b54eef6"
     },
     "AIOS/config/blueprint-allowed.txt": {
-      "bytes": 1271,
+      "bytes": 1288,
       "class": "seed",
-      "sha256": "dbb8187fe92072f9800858dd1a40d282868d00805ede69567824dd75c0fd6aa7"
+      "sha256": "0f8b8af73f687cffe22500ac759b3e529238b755f83fe18026e6a18745601617"
     },
     "AIOS/how-to-use-this.md": {
       "bytes": 9405,
@@ -135,9 +135,9 @@
       "sha256": "9b038760cfde4b477a26d5e68ebeb25d9a39c49e9fc76c1fb98a27438ed19545"
     },
     "AIOS/scripts/blueprint-update.py": {
-      "bytes": 35316,
+      "bytes": 35311,
       "class": "system",
-      "sha256": "a809dd613dd045c600ba889903507008e990a3c3f3f49bee1f6b7d8e055a0ae1"
+      "sha256": "b21be5dc8307d0714c76fe6d462ab415ee3866f7fd23791e37328f56b3209479"
     },
     "AIOS/scripts/canon-check.py": {
       "bytes": 8579,
@@ -370,9 +370,9 @@
       "sha256": "bece5ade636e71d9036a7c3ba35c659a88a6bb26b43cff3bfd85cc881370690b"
     },
     "AIOS/skills/update-vault/SKILL.md": {
-      "bytes": 11589,
+      "bytes": 11584,
       "class": "system",
-      "sha256": "43070d10de4a013591c73e9c845430d9f29c4c80d4d7f6d9e8d7a35209c1a864"
+      "sha256": "011a138f1b562185eb08aed89c9e0598ec360c5eb9cb35198d33abf00a9afc3a"
     },
     "AIOS/skills/vault-first/SKILL.md": {
       "bytes": 9727,
@@ -615,10 +615,10 @@
       "sha256": "38f778a3c11d85c76b584a6b15cb49aaec83ee8a2bdca0b49d72e9215e8b93a2"
     },
     "UPDATE-MY-VAULT.md": {
-      "bytes": 6865,
+      "bytes": 6845,
       "class": "system",
-      "sha256": "6741fa9e7f0219b3e79f7c11de2c8011effa7e703f8a88af53bde3e10f54250a"
+      "sha256": "b671e04ec9e727c12692c396dd33f15447b18d63919aa31064018b911a9ab602"
     }
   },
-  "generated": "2026-09-28T22:16:14"
+  "generated": "2026-10-01T00:19:31"
 }
