@@ -57,6 +57,23 @@ are.
 
 ## Changes
 
+### id: memory-graph-rules-sessions
+title: Three new tools - remember what you keep correcting, see how notes connect, recall past sessions
+files: AIOS/scripts/dream.py, AIOS/scripts/graph.py, AIOS/scripts/session-digest.py
+needs: nothing
+
+Three small tools, none of which use an AI or send anything anywhere. `dream.py`
+keeps a count of corrections and preferences you repeat: say the same thing
+three times and it becomes a confirmed rule with a confidence score, and a rule
+nobody has needed for four months quietly expires. Every change is backed up
+first and `rollback` undoes the last one. `graph.py` answers "what connects
+these two notes" and "which notes does everything lead to" from the links you
+already wrote, in about a second. `session-digest.py` turns your past Claude
+Code sessions into one readable line each (what you asked, which files changed),
+so a new session can pick up where the last stopped. Nothing runs by itself and
+nothing in your own notes is touched; you call them when you want them.
+
+
 ### id: updater-stops-re-asking
 title: Updating stops re-asking old changes, and a fresh copy checks clean
 files: AIOS/scripts/blueprint-update.py, AIOS/scripts/blueprint-release.py, AIOS/scripts/stale-check.py, AIOS/scripts/setup.py

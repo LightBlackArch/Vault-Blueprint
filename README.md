@@ -1,5 +1,7 @@
 # Vault Blueprint
 
+*An Obsidian second brain for Claude Code and Claude Cowork: persistent AI memory in plain markdown, free, MIT.*
+
 **An Obsidian vault an AI actually runs — for your whole life, not just your
 projects. It remembers, corrects itself when you correct it, and updates
 without ever overwriting what you wrote.**
@@ -44,6 +46,13 @@ part that actually breaks in practice:
   fires before any claim you'd act on — a spec, a price, a recommendation —
   and requires either a search or an honest "unverified," plus a
   case-against before it's allowed to agree with you.
+- **It learns, finds, and recalls without an AI bill.** Three plain scripts
+  do what memory plugins do with a hidden database: `dream.py` turns
+  corrections you repeat into rules whose confidence grows with use and
+  fades without it (with snapshot and rollback); `graph.py` answers "what
+  connects to what" from your links in under a second; `session-digest.py`
+  keeps one readable line per past Claude Code session. Everything stays a
+  file you can open.
 - **It writes things down without being asked.** `auto-capture` runs every
   session. A fact, a decision, a screenshot's contents — it gets its own
   note, in the right folder, logged, instead of evaporating when the chat
