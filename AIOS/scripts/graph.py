@@ -14,6 +14,8 @@ Usage:
     python3 AIOS/scripts/graph.py neighbors "Note"  # everything one link away
     python3 AIOS/scripts/graph.py path "A" "B"      # shortest chain of links A -> B
     python3 AIOS/scripts/graph.py lonely            # notes nothing links to
+    python3 AIOS/scripts/graph.py suggest [N]       # connections nobody wrote: A names B, never links it
+    python3 AIOS/scripts/graph.py unlinked "Note"   # where else "Note" is mentioned without a link
     python3 AIOS/scripts/graph.py --selftest
 
 Names match the way Obsidian does: case-insensitive, by file name, no folder,
@@ -60,6 +62,51 @@ def build(root=VAULT):
                 out[src].add(dst)
                 inn[dst].add(src)
     return names, out, inn
+
+
+def mentions(root=VAULT):
+    """Plain-text mentions of one note's title inside another note that never links to it.
+
+    Returns {(source, target): count}. Titles under 5 characters, and titles that
+    turn up in over 5% of all notes (words like "Efforts"), are too common to
+    mean anything and are ignored.
+    """
+    names, out, _ = build(root)
+    texts, noise = {}, set()
+    for d, dirs, files in os.walk(root):
+        rel = os.path.relpath(d, root)
+        dirs[:] = [x for x in dirs
+                   if not any(os.path.join(rel, x).lstrip("./").startswith(s) for s in SKIP)]
+        for f in files:
+            if f.endswith(".md"):
+                key = os.path.splitext(f)[0].lower()
+                # dated logs and machine-written files mention everything; they'd drown the signal
+                if rel.startswith((os.path.join("Calendar", "Daily"), os.path.join("Calendar", "Weekly"),
+                                   os.path.join("AIOS", "generated"))) or re.match(r"\d{4}-", key):
+                    noise.add(key)
+                    continue
+                try:
+                    t = open(os.path.join(d, f), encoding="utf-8", errors="ignore").read()
+                except OSError:
+                    continue
+                t = LINK.sub(lambda m: " ", CODE.sub("", t))
+                texts[os.path.splitext(f)[0].lower()] = re.findall(r"[A-Za-z0-9']+", t)
+    # case-sensitive on purpose: "Reading" the note is not every sentence that starts with Reading
+    titles = {k: tuple(re.findall(r"[A-Za-z0-9']+", names[k])) for k in names if len(k) >= 5 and k not in noise}
+    by_len = defaultdict(dict)
+    for k, tup in titles.items():
+        by_len[len(tup)][tup] = k
+    found, seen_in = defaultdict(int), defaultdict(set)
+    for src, words in texts.items():
+        for n, table in by_len.items():
+            for i in range(len(words) - n + 1):
+                k = table.get(tuple(words[i:i + n]))
+                if k and k != src:
+                    found[(src, k)] += 1
+                    seen_in[k].add(src)
+    common = {k for k, v in seen_in.items() if len(v) > max(3, 0.05 * len(texts))}
+    return {pair: c for pair, c in found.items()
+            if pair[1] not in common and pair[1] not in out[pair[0]]}, names
 
 
 def resolve(names, q):
@@ -121,6 +168,16 @@ def main(argv):
         else:
             print(f"{names[k]}\n  linked from ({len(inn[k])}): {fmt(names, inn[k])}"
                   f"\n  links to    ({len(out[k])}): {fmt(names, out[k])}")
+    elif cmd == "suggest":
+        found, nm = mentions()
+        n = int(args[0]) if args else 15
+        for (src, dst), c in sorted(found.items(), key=lambda x: (-x[1], x[0]))[:n]:
+            print(f"{nm[src]}  mentions  {nm[dst]}  ({c}x, no link)")
+    elif cmd == "unlinked" and args:
+        found, nm = mentions()
+        k = resolve(names, args[0])
+        rows = sorted(((nm[s_], c) for (s_, d_), c in found.items() if d_ == k), key=lambda x: (-x[1], x[0]))
+        print("\n".join(f"{n}  ({c}x)" for n, c in rows) or "no unlinked mentions")
     elif cmd == "path" and len(args) == 2:
         a, b = resolve(names, args[0]), resolve(names, args[1])
         chain = shortest(out, inn, a, b)
@@ -149,6 +206,13 @@ def selftest():
         assert shortest(out, inn, "a", "c") == ["a", "b", "c"]
         assert shortest(out, inn, "d", "c") == ["d", "a", "b", "c"]
         assert len(inn["a"]) == 1                                  # only D; Privat not read
+        w("E.md", "Today I read about the Banana Bread note and Banana Bread again, not banana bread.")
+        w("Banana Bread.md", "recipe")
+        w("F.md", "I linked [[Banana Bread]] properly.")
+        found, nm = mentions(t)
+        assert found.get(("e", "banana bread")) == 2, found       # named twice, never linked
+        assert ("f", "banana bread") not in found                  # already linked: not a suggestion
+        assert not any(k[1] in ("a", "b", "c", "d") for k in found)  # short titles ignored
     print("graph.py selftest: ok")
     return 0
 

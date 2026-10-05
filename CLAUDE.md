@@ -7,6 +7,10 @@ Do this every time without exception at the start of every session.
 
 Confirm in one line that you've read all three, then wait for instructions.
 
+If `AIOS/scripts/session-digest.py` exists, run `python3 AIOS/scripts/session-digest.py context`
+too. It lists what recent sessions in this vault were about and which files they
+changed, so you can pick up where the last one stopped instead of asking.
+
 Never read or write anything under `Privat/`.
 
 **If `AIOS/me.md` still contains `<< >>` placeholders, the vault has not been

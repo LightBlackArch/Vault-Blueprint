@@ -13,6 +13,8 @@ no cost, no cloud, and nothing hidden: the digest is a plain note you can read.
     python3 AIOS/scripts/session-digest.py recent [N]   # print the last N sessions (default 5)
     python3 AIOS/scripts/session-digest.py find WORD    # sessions whose request or files match
     python3 AIOS/scripts/session-digest.py context      # short block for a session-start hook
+    python3 AIOS/scripts/session-digest.py --install-schedule   # rebuild it hourly, by itself
+    python3 AIOS/scripts/session-digest.py --uninstall-schedule
     python3 AIOS/scripts/session-digest.py --selftest
 
 Only sessions started from this vault's folder are read (Claude Code names the
@@ -126,6 +128,16 @@ def write(rows, vault=VAULT):
 def main(argv):
     if argv and argv[0] == "--selftest":
         return selftest()
+    if argv and argv[0] in ("--install-schedule", "--uninstall-schedule"):
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import scheduler
+        if argv[0] == "--uninstall-schedule":
+            ok, detail = scheduler.uninstall("session-digest")
+        else:
+            every = int(argv[argv.index("--every-min") + 1]) if "--every-min" in argv else 60
+            ok, detail = scheduler.install("session-digest", os.path.abspath(__file__), every_minutes=every)
+        print(("Done. " if ok else "Could not: ") + detail)
+        return 0 if ok else 1
     rows = collect()
     cmd = argv[0] if argv else "build"
     if cmd == "build":

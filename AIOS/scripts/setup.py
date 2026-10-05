@@ -241,6 +241,9 @@ def do_setup(dry):
     install_job("capture-heartbeat", "capture-heartbeat.py", 30, dry,
                  required=False)
 
+    if (Path.home() / ".claude" / "projects").is_dir():
+        install_job("session-digest", "session-digest.py", 60, dry, required=False)
+
     run_checks()
     manual_steps()
     print()

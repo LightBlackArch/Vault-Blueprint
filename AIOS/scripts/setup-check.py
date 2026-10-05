@@ -193,6 +193,13 @@ def c_optional_jobs():
         check("  schedule: backup-claude-code", WARN,
               "optional, not installed — run setup.py again to turn it on")
 
+    if has_claude_code:
+        installed = scheduler.is_installed(
+            "session-digest", script_path=SCRIPTS / "session-digest.py")
+        check("  schedule: session-digest", PASS if installed else WARN,
+              "installed, rebuilds the session list hourly" if installed
+              else "optional, not installed — run setup.py again to turn it on")
+
     installed = scheduler.is_installed(
         "capture-heartbeat", script_path=SCRIPTS / "capture-heartbeat.py")
     check("  schedule: capture-heartbeat", PASS if installed else WARN,

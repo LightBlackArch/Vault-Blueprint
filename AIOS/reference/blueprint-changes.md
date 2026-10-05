@@ -57,6 +57,34 @@ are.
 
 ## Changes
 
+### id: search-and-link-suggestions
+title: Ranked search (optionally by meaning) and "you mention this but never linked it"
+files: AIOS/scripts/search.py, AIOS/scripts/graph.py, AIOS/scripts/session-digest.py, AIOS/scripts/setup.py, AIOS/scripts/setup-check.py
+needs: nothing
+
+`search.py "what you mean"` returns the best-matching notes, ranked, in about a
+second, with no AI. Add `--semantic` and, if you run Ollama (a free program that
+runs AI models on your own computer) with its `nomic-embed-text` model, it also
+finds notes by meaning, so "automobile" finds a note that only says "car". If
+Ollama is not running it says so and falls back to the normal search instead of
+failing. `graph.py suggest` lists connections nobody wrote: a note that names
+another note several times without ever linking it. `session-digest.py` can now
+rebuild its session list every hour on its own, and setup turns that on (and
+checks it) when Claude Code is on the machine. Nothing in your own notes is
+touched.
+
+### id: session-start-recall
+title: A new session starts knowing what the last ones did
+files: CLAUDE.md
+needs: session-digest.py from the entry above
+
+CLAUDE.md now asks your AI to run `session-digest.py context` at the start of a
+session, which prints what recent sessions in this vault were about and which
+files they changed, so it can pick up where the last one stopped. This file
+holds your own wording, so a script never writes it: your AI adds the one
+sentence by hand when you accept this.
+
+
 ### id: memory-graph-rules-sessions
 title: Three new tools - remember what you keep correcting, see how notes connect, recall past sessions
 files: AIOS/scripts/dream.py, AIOS/scripts/graph.py, AIOS/scripts/session-digest.py
