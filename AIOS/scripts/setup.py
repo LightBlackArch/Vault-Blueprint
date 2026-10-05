@@ -61,6 +61,15 @@ CODE = VAULT / "AIOS" / "code"
 sys.path.insert(0, str(SCRIPTS))
 
 
+
+def _linux_install(pkg):
+    """The install line for THIS distro, not just Debian's."""
+    for exe, line in (("pacman", "sudo pacman -S "), ("dnf", "sudo dnf install "),
+                      ("zypper", "sudo zypper install "), ("apt", "sudo apt install ")):
+        if shutil.which(exe):
+            return line + pkg
+    return "sudo apt install " + pkg
+
 def ok(msg):
     print(f"  [ok]   {msg}")
 
@@ -87,7 +96,7 @@ def check_python():
     elif system == "Windows":
         todo("Install a newer Python:", "https://www.python.org/downloads/windows/")
     else:
-        todo("Install a newer Python:", "sudo apt install python3")
+        todo("Install a newer Python:", _linux_install("python3" if shutil.which("apt") else "python"))
     return False
 
 
@@ -189,7 +198,7 @@ def manual_steps():
     elif system == "Windows":
         print("       https://git-scm.com/download/win")
     else:
-        print("       sudo apt install git")
+        print("       " + _linux_install("git"))
 
 
 def do_setup(dry):

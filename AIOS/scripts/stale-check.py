@@ -92,6 +92,10 @@ def skip(path):
     parts = r.split(os.sep)
     if parts[0] in SKIP_DIRS:
         return True
+    # EXAMPLE notes ship as demos and are meant to be deleted; they would
+    # otherwise go EXPIRED on a fresh copy just because the calendar moved on.
+    if os.path.basename(r).startswith("EXAMPLE "):
+        return True
     return any(r.startswith(p) for p in SKIP_PATHS)
 
 
@@ -249,8 +253,11 @@ def main():
         # Templates are copied, not linked; the root entry points (CLAUDE.md,
         # AGENTS.md, README.md) are opened directly by tools and people.
         # None of them is meant to be reached through a wikilink.
-        if r.startswith(os.path.join("AIOS", "templates")) or \
-                r in ("CLAUDE.md", "AGENTS.md", "README.md"):
+        # AIOS/reference/ and character.md are opened on demand, by design.
+        if r.startswith((os.path.join("AIOS", "templates"),
+                         os.path.join("AIOS", "reference"))) or \
+                r in ("CLAUDE.md", "AGENTS.md", "README.md",
+                      os.path.join("AIOS", "character.md")):
             continue
         name = os.path.splitext(os.path.basename(p))[0].lower()
         if name not in linked_to:

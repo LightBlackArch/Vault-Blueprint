@@ -70,9 +70,9 @@
       "sha256": "0ca582caf44f59677077a202dc45cf4f9ec607a5b9cc39e045238c910f16f8dd"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 28186,
+      "bytes": 29287,
       "class": "system",
-      "sha256": "2d179d7ee7ec3902f7c63d7010c798b28b5150231826d8eb93f82ef7185915e9"
+      "sha256": "9b924c64450ceb1cce7105b8e8e435f11fb3b595e07dce7c0e03cf1b09140c67"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -130,14 +130,14 @@
       "sha256": "c834e633042c852a1cd09b832ae27d49a8aa27010e7cacbadf4b07da0ca99068"
     },
     "AIOS/scripts/blueprint-release.py": {
-      "bytes": 12030,
+      "bytes": 12292,
       "class": "system",
-      "sha256": "9b038760cfde4b477a26d5e68ebeb25d9a39c49e9fc76c1fb98a27438ed19545"
+      "sha256": "b0644f188cb38584b38c96a31d367f78ab2bd9cae699442039d3e3799cdf47df"
     },
     "AIOS/scripts/blueprint-update.py": {
-      "bytes": 35311,
+      "bytes": 35938,
       "class": "system",
-      "sha256": "b21be5dc8307d0714c76fe6d462ab415ee3866f7fd23791e37328f56b3209479"
+      "sha256": "884302d02f40bb908cff1c216d53b38e3dd6a3eb84f6e50dc03dd58381c9b23d"
     },
     "AIOS/scripts/canon-check.py": {
       "bytes": 8579,
@@ -285,9 +285,9 @@
       "sha256": "17934a59561be69bb2480490376afca68d62c49b64d12bb6742f3fd61c4d2b9b"
     },
     "AIOS/scripts/setup.py": {
-      "bytes": 9476,
+      "bytes": 9875,
       "class": "system",
-      "sha256": "a6f5382c44df72de1cbe9fff99294d4b5f2d81577d9f7b704501b0febb6409b6"
+      "sha256": "2198d51c91820eab6d7e7878f36b71c6158882ea92314317d1d2f5e08d4736e1"
     },
     "AIOS/scripts/shot.py": {
       "bytes": 26040,
@@ -295,9 +295,9 @@
       "sha256": "3ff40c333d487f5aa616d3b30bd9c8c19f2541f609e8692c3eeb7dc5b746ac4b"
     },
     "AIOS/scripts/stale-check.py": {
-      "bytes": 9773,
+      "bytes": 10195,
       "class": "system",
-      "sha256": "f3d53c492a29cd8a3d5e4b082929b0e1edcf862753d6bc4043c0dede4f643100"
+      "sha256": "385623b78a24f0b4723c869793afa3e1fa9fa54e74891161bc804d6ef6209304"
     },
     "AIOS/scripts/taste.py": {
       "bytes": 4822,
@@ -610,9 +610,9 @@
       "sha256": "7c9f3d358c3a270eb7b87f3e3687b09803531128102f049850cb94d38f7a072f"
     },
     "README.md": {
-      "bytes": 4899,
+      "bytes": 5013,
       "class": "seed",
-      "sha256": "38f778a3c11d85c76b584a6b15cb49aaec83ee8a2bdca0b49d72e9215e8b93a2"
+      "sha256": "a4f85156349c51561413c4489d4c5e1d6f622cc2685b36bc77ec8b474b6fe781"
     },
     "UPDATE-MY-VAULT.md": {
       "bytes": 6845,
@@ -620,5 +620,5 @@
       "sha256": "b671e04ec9e727c12692c396dd33f15447b18d63919aa31064018b911a9ab602"
     }
   },
-  "generated": "2026-10-01T00:19:31"
+  "generated": "2026-10-05T21:08:32"
 }

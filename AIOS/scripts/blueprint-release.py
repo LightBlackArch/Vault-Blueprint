@@ -43,6 +43,7 @@ except Exception:
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -188,7 +189,8 @@ def main():
 
     # 6. nothing personal, if a denylist is reachable
     deny = None
-    for cand in (ROOT.parent / "AI-OS" / "AIOS" / "config" / "blueprint-denylist.txt",
+    for cand in (Path(os.environ["BLUEPRINT_DENYLIST"]) if os.environ.get("BLUEPRINT_DENYLIST") else ROOT / "nope",
+                 ROOT.parent / "AI-OS" / "AIOS" / "config" / "blueprint-denylist.txt",
                  ROOT.parent / "Ai Os" / "AIOS" / "config" / "blueprint-denylist.txt",
                  ROOT / "AIOS" / "config" / "blueprint-denylist.txt"):
         if cand.exists():
@@ -243,8 +245,10 @@ def main():
         for h in hits[:20]:
             print(f"         {h}")
     else:
-        print(f"{OK} denylist not found next to the blueprint — scan skipped "
-              f"(fine if you're not the original author)")
+        print(f"[ -- ] denylist NOT scanned — none found next to the blueprint. "
+              f"Fine for anyone but the original author; if that's you, set "
+              f"BLUEPRINT_DENYLIST=/path/to/blueprint-denylist.txt and re-run "
+              f"before pushing.")
 
     print()
     if fails:

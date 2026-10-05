@@ -402,8 +402,19 @@ def build_plan(bp_root: Path, state: dict, include_declined: bool):
 
     # Files a hand-written entry speaks for get grouped under it, so the reader
     # sees "Screenshots get their own folder" instead of six file paths.
+    # A file belongs to the NEWEST entry that lists it (blueprint-changes.md puts
+    # the newest entry at the top, so the first listing wins), and the change
+    # log itself never counts. Without
+    # this, one edit to a shared script re-opens every old entry that ever
+    # mentioned it, and a 6-change release shows up as 27 questions.
+    owner = {}
     for cid, c in described.items():
-        touched = [f for f in c["files"] if f in remote and not forbidden(f)]
+        for f in c["files"]:
+            owner.setdefault(f, cid)
+    for cid, c in described.items():
+        touched = [f for f in c["files"]
+                   if owner.get(f) == cid and f != CHANGES_REL
+                   and f in remote and not forbidden(f)]
         pending = []
         for rel in touched:
             local = VAULT / rel
@@ -429,8 +440,8 @@ def build_plan(bp_root: Path, state: dict, include_declined: bool):
 
     # Everything else, file by file.
     for rel, src in sorted(remote.items()):
-        if rel in claimed or forbidden(rel):
-            continue
+        if rel in claimed or forbidden(rel) or rel == CHANGES_REL:
+            continue                 # the change log is a record, not a question
         cls = classify(rel, manifest)
         if cls == "never":
             continue

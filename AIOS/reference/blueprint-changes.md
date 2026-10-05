@@ -57,6 +57,24 @@ are.
 
 ## Changes
 
+### id: updater-stops-re-asking
+title: Updating stops re-asking old changes, and a fresh copy checks clean
+files: AIOS/scripts/blueprint-update.py, AIOS/scripts/blueprint-release.py, AIOS/scripts/stale-check.py, AIOS/scripts/setup.py
+needs: nothing
+
+When one file got edited again, the updater used to bring back every older
+change that had ever mentioned it, so a release with six real changes could
+show up as twenty-seven questions. Now each file is credited only to the
+newest change that covers it, and the change log itself is no longer offered
+as something to approve. A release that really has six changes asks six
+questions. Separately, the blueprint author's release check now says plainly
+when it could not scan for personal details, instead of printing a green tick.
+Two more rough edges on a fresh copy are gone: the stale-note check no longer
+flags the demo notes (they were meant to be deleted) or your on-demand
+reference files as lost, and setup suggests the install command for your own
+Linux (pacman, dnf, apt) instead of always assuming apt. Nothing in your own
+notes is touched.
+
 ### id: fresh-vault-checks-clean
 title: The vault's own health checks stop reporting problems that aren't real
 files: AIOS/scripts/vault-check.py, AIOS/scripts/stale-check.py, AIOS/scripts/route-check.py, AIOS/scripts/person.py, Atlas/People/People.md
