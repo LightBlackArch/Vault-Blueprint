@@ -63,6 +63,22 @@ actually try to live inside one of these systems for months instead of a
 weekend, and this blueprint exists because those breaks already happened
 once, for real, and got fixed.
 
+
+## What works with nothing installed, and what is optional
+
+Everything above needs only Python 3 and a folder. These extras are optional,
+and each one falls back cleanly if you skip it:
+
+| Extra | What you get | If you skip it |
+|---|---|---|
+| `search.py --semantic` | Finds notes by meaning ("automobile" finds "car"). Needs [Ollama](https://ollama.com) running locally. | Normal ranked search still works, and `--semantic` says why it fell back. |
+| `graph.py ai "Note"` | Your own `claude` command suggests links nobody wrote. Needs Claude Code logged in. | Every other `graph.py` command is local and free. |
+| `mcp-server.py` | Other AI apps can query the vault. Connect with `claude mcp add vault -- python3 "$PWD/AIOS/scripts/mcp-server.py"`. | Nothing else depends on it. |
+| `dream.py` | Counts corrections you repeat into rules with confidence and expiry. Run `dream.py signal "<rule>"` when you correct your AI; it does not listen to your chats on its own. | The vault works the same; rules just aren't tracked. |
+| `session-digest.py` | One readable line per past Claude Code session. `setup.py` schedules it hourly when Claude Code is present. | Run it by hand when you want it. |
+
+Every script has `--selftest`, so you can check it works on your machine.
+
 ---
 
 ## Quick start
