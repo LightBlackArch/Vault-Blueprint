@@ -57,6 +57,24 @@ are.
 
 ## Changes
 
+### id: mcp-server-and-ai-links
+title: Other AI tools can use your vault, rewording counts as the same rule, and an optional AI link-suggester
+files: AIOS/scripts/mcp-server.py, AIOS/scripts/graph.py, AIOS/scripts/search.py, AIOS/scripts/dream.py
+needs: nothing
+
+`mcp-server.py` is a tiny connector (MCP is the standard way AI apps call
+outside tools) that lets Claude Code, Codex, Cursor or Claude Desktop search your
+vault, follow its links, look up past sessions and read your learned rules
+directly. It runs locally, adds no new abilities, and the one command to connect
+it is in its first lines. Meaning-based search now talks to current Ollama
+(`/api/embed`) and still works with older versions. `dream.py` counts a reworded
+correction as the same rule ("don't delete files without asking me" and "never
+delete stuff without asking" add up together instead of splitting).
+`graph.py ai "Note"` asks your own `claude` command which notes a note should
+link to even when it never names them. It only prints suggestions and writes
+nothing, and it does nothing unless you call it.
+
+
 ### id: search-and-link-suggestions
 title: Ranked search (optionally by meaning) and "you mention this but never linked it"
 files: AIOS/scripts/search.py, AIOS/scripts/graph.py, AIOS/scripts/session-digest.py, AIOS/scripts/setup.py, AIOS/scripts/setup-check.py

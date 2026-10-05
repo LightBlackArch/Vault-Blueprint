@@ -33,6 +33,7 @@ import re
 import sys
 import tempfile
 import threading
+import urllib.error
 import urllib.request
 from collections import Counter
 
@@ -94,11 +95,19 @@ def bm25(notes, query, k1=1.5, b=0.75):
 
 
 def embed(text, model, host):
-    req = urllib.request.Request(host.rstrip("/") + "/api/embeddings",
-                                 json.dumps({"model": model, "prompt": text[:MAX_EMBED_CHARS]}).encode(),
-                                 {"Content-Type": "application/json"})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return json.load(r)["embedding"]
+    """One vector for `text`. Uses Ollama's current /api/embed; older servers get /api/embeddings."""
+    def post(path, body):
+        req = urllib.request.Request(host.rstrip("/") + path, json.dumps(body).encode(),
+                                     {"Content-Type": "application/json"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.load(r)
+    text = text[:MAX_EMBED_CHARS]
+    try:
+        return post("/api/embed", {"model": model, "input": text})["embeddings"][0]
+    except urllib.error.HTTPError as e:
+        if e.code != 404:                       # 404 = old server (or model missing, which the fallback also reports)
+            raise
+    return post("/api/embeddings", {"model": model, "prompt": text})["embedding"]
 
 
 def cosine(a, b):
@@ -181,13 +190,21 @@ def selftest():
     import http.server
 
     class Fake(http.server.BaseHTTPRequestHandler):
-        """Stands in for Ollama: 'car' and 'automobile' share a dimension, so meaning can match without words."""
+        """Stands in for Ollama: 'car' and 'automobile' share a dimension, so meaning can match without words.
+        OLD=True imitates a server that only has the deprecated /api/embeddings."""
+        OLD = False
+
         def do_POST(self):
             body = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
-            low = body["prompt"].lower()
+            new_api = self.path == "/api/embed"
+            if (new_api and Fake.OLD) or self.path not in ("/api/embed", "/api/embeddings"):
+                self.send_response(404)
+                self.end_headers()
+                return
+            low = (body["input"] if new_api else body["prompt"]).lower()
             vec = [1.0 if ("car" in low or "automobile" in low) else 0.0,
                    1.0 if "bread" in low else 0.0, 0.01]
-            data = json.dumps({"embedding": vec}).encode()
+            data = json.dumps({"embeddings": [vec]} if new_api else {"embedding": vec}).encode()
             self.send_response(200)
             self.end_headers()
             self.wfile.write(data)
@@ -218,6 +235,10 @@ def selftest():
         rows, note = search("automobile", t, use_semantic=True, host=host)
         assert not note and rows[0][0] == os.path.join("Efforts", "Car Repair.md"), (rows, note)
         assert os.path.exists(os.path.join(t, "AIOS", "generated", "embeddings.json"))
+        Fake.OLD = True                                                       # an older Ollama: fallback endpoint
+        os.remove(os.path.join(t, "AIOS", "generated", "embeddings.json"))
+        rows, note = search("automobile", t, use_semantic=True, host=host)
+        assert not note and rows[0][0] == os.path.join("Efforts", "Car Repair.md"), (rows, note)
         srv.shutdown()
         rows, note = search("brakes", t, use_semantic=True, host="http://127.0.0.1:9")   # nothing listening
         assert "unavailable" in note and rows, (rows, note)                              # falls back, doesn't fail

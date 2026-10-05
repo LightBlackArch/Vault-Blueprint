@@ -16,7 +16,13 @@ Usage:
     python3 AIOS/scripts/graph.py lonely            # notes nothing links to
     python3 AIOS/scripts/graph.py suggest [N]       # connections nobody wrote: A names B, never links it
     python3 AIOS/scripts/graph.py unlinked "Note"   # where else "Note" is mentioned without a link
+    python3 AIOS/scripts/graph.py ai "Note"         # ask an AI which notes it SHOULD link to, even unnamed ones
     python3 AIOS/scripts/graph.py --selftest
+
+`ai` is the only command that uses an AI: it sends that one note (first 4000
+characters) and the list of other note titles to your own `claude` command (Claude
+Code, `claude -p`), prints its suggestions, and writes nothing. Everything else
+here is local and free.
 
 Names match the way Obsidian does: case-insensitive, by file name, no folder,
 no .md. Skips Privat/, AIOS/history/, AIOS/archive/, AIOS/skills/, .git,
@@ -24,6 +30,8 @@ no .md. Skips Privat/, AIOS/history/, AIOS/archive/, AIOS/skills/, .git,
 """
 import os
 import re
+import shutil
+import subprocess
 import sys
 import tempfile
 from collections import defaultdict, deque
@@ -109,6 +117,41 @@ def mentions(root=VAULT):
             if pair[1] not in common and pair[1] not in out[pair[0]]}, names
 
 
+def note_path(root, key):
+    for d, dirs, files in os.walk(root):
+        rel = os.path.relpath(d, root)
+        dirs[:] = [x for x in dirs
+                   if not any(os.path.join(rel, x).lstrip("./").startswith(s) for s in SKIP)]
+        for f in files:
+            if f.endswith(".md") and os.path.splitext(f)[0].lower() == key:
+                return os.path.join(d, f)
+
+
+def ai_prompt(title, text, others):
+    return ("Below is one note from a personal knowledge vault, then the titles of the other notes.\n"
+            "List up to 8 other notes this note SHOULD link to, even if it never names them: "
+            "same topic, a decision it depends on, a concept it uses. One per line, exactly "
+            "`Title :: one-sentence reason`. Use only titles from the list. No other text.\n\n"
+            f"NOTE TITLE: {title}\n{text[:4000]}\n\nOTHER TITLES:\n" + "\n".join(others[:400]))
+
+
+def ai_suggest(root, query):
+    names, out, inn = build(root)
+    k = resolve(names, query)
+    path = note_path(root, k)
+    exe = shutil.which("claude")
+    if not path or not exe:
+        sys.exit("needs the `claude` command (Claude Code) on this machine" if path else "note not found")
+    text = open(path, encoding="utf-8", errors="ignore").read()
+    others = sorted(names[x] for x in names if x != k and x not in out[k])
+    r = subprocess.run([exe, "-p", ai_prompt(names[k], text, others)], capture_output=True, text=True, timeout=180, stdin=subprocess.DEVNULL)
+    if r.returncode:
+        sys.exit("claude failed: " + (r.stderr.strip() or r.stdout.strip())[:300])
+    valid = {names[x].lower() for x in names}
+    kept = [ln for ln in r.stdout.splitlines() if "::" in ln and ln.split("::")[0].strip().lower() in valid]
+    return kept
+
+
 def resolve(names, q):
     k = os.path.splitext(q.strip())[0].lower()
     if k in names:
@@ -178,6 +221,8 @@ def main(argv):
         k = resolve(names, args[0])
         rows = sorted(((nm[s_], c) for (s_, d_), c in found.items() if d_ == k), key=lambda x: (-x[1], x[0]))
         print("\n".join(f"{n}  ({c}x)" for n, c in rows) or "no unlinked mentions")
+    elif cmd == "ai" and args:
+        print("\n".join(ai_suggest(VAULT, args[0])) or "no suggestions it could stand behind")
     elif cmd == "path" and len(args) == 2:
         a, b = resolve(names, args[0]), resolve(names, args[1])
         chain = shortest(out, inn, a, b)
@@ -213,6 +258,20 @@ def selftest():
         assert found.get(("e", "banana bread")) == 2, found       # named twice, never linked
         assert ("f", "banana bread") not in found                  # already linked: not a suggestion
         assert not any(k[1] in ("a", "b", "c", "d") for k in found)  # short titles ignored
+        # ai: a stand-in `claude` that answers with one real and one invented title
+        stub = os.path.join(t, "bin")
+        os.makedirs(stub)
+        open(os.path.join(stub, "claude"), "w").write(
+            "#!/bin/sh\nprintf 'Banana Bread :: it is about recipes\\nMade Up Note :: invented\\n'\n")
+        os.chmod(os.path.join(stub, "claude"), 0o755)
+        old_path = os.environ["PATH"]
+        os.environ["PATH"] = stub + os.pathsep + old_path
+        try:
+            got = ai_suggest(t, "A")
+        finally:
+            os.environ["PATH"] = old_path
+        assert got == ["Banana Bread :: it is about recipes"], got   # invented titles are dropped
+        assert "Privat" not in ai_prompt("A", "x", ["Banana Bread"])
     print("graph.py selftest: ok")
     return 0
 

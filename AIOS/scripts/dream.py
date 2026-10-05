@@ -54,6 +54,19 @@ def rid(text):
     return hashlib.sha1(norm(text).encode()).hexdigest()[:8]
 
 
+STOPW = set("a an the and or of to in on for is are was were be it this that with as at by from i you my me me please just do does not dont no".split())
+
+
+def words(text):
+    return {w for w in norm(text).split() if w not in STOPW and len(w) > 2}
+
+
+def similar(a, b):
+    """Same rule, said differently: shared meaningful words / all meaningful words >= 0.6."""
+    wa, wb = words(a), words(b)
+    return bool(wa and wb) and len(wa & wb) / len(wa | wb) >= 0.6
+
+
 def load(root):
     p = paths(root)[0]
     if not os.path.exists(p):
@@ -121,6 +134,9 @@ def signal(root, text, day, bump=1, use=False):
         r = data["rules"].get(k)
         if r is None:
             sys.exit(f"no rule matches '{text}'")
+    if r is None and not use:                      # said differently before? count it as the same rule
+        k = next((x for x, v in data["rules"].items() if similar(v["text"], text)), k)
+        r = data["rules"].get(k)
     if r is None:
         r = data["rules"][k] = {"text": text.strip(), "count": 0, "first": day, "last": day, "uses": 0}
     if use:
@@ -183,6 +199,14 @@ def selftest():
         signal(t, "use short answers", d0.isoformat())
         data = load(t)
         assert len(data["rules"]) == 2                      # punctuation/case don't split a rule
+        n_before = next(r for r in data["rules"].values() if r["count"] == 3)["count"]
+        signal(t, "don't delete files without asking me", d0.isoformat())     # reworded: same rule
+        assert len(load(t)["rules"]) == 2 and next(r for r in load(t)["rules"].values() if r["count"] == 4)
+        signal(t, "always use metric units", d0.isoformat())                   # different rule stays separate
+        assert len(load(t)["rules"]) == 3
+        rollback(t); rollback(t)
+        data = load(t)
+        assert len(data["rules"]) == 2 and next(r for r in data["rules"].values() if r["count"] == 3)
         conf, status, _ = score(next(r for r in data["rules"].values() if r["count"] == 3), d0 + dt.timedelta(days=2))
         assert status == "confirmed" and conf == 0.6, (conf, status)
         # decay: 45 days later confidence halves; 120 days later it expires
