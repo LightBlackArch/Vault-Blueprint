@@ -130,7 +130,11 @@ def main(argv):
         return selftest()
     if argv and argv[0] in ("--install-schedule", "--uninstall-schedule"):
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        import scheduler
+        try:
+            import scheduler
+        except ImportError:
+            print("This vault has no scheduler.py; add `0 * * * * python3 <this file>` to your crontab yourself.")
+            return 1
         if argv[0] == "--uninstall-schedule":
             ok, detail = scheduler.uninstall("session-digest")
         else:
