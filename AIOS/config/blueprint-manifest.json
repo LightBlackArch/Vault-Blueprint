@@ -70,9 +70,9 @@
       "sha256": "0ca582caf44f59677077a202dc45cf4f9ec607a5b9cc39e045238c910f16f8dd"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 34089,
+      "bytes": 34878,
       "class": "system",
-      "sha256": "ebfdfd24e047249b621023f0a720a1341ffdb55d44805f134ccd48225e2d66d2"
+      "sha256": "04c7939f3ce8489e9596a3d63a040694df1d73ca8856015fdd2818af976e33e9"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -295,9 +295,9 @@
       "sha256": "2a3737deab50e161ceb0b2d9db19b398135c2dc3e554430e52c0a41467014511"
     },
     "AIOS/scripts/search.py": {
-      "bytes": 12952,
+      "bytes": 16664,
       "class": "system",
-      "sha256": "94790c2a8d3ae847828d49301969c155a0d5fc1316d1cf9f30645307654c86c3"
+      "sha256": "63c4ca8837490b1337cb70fa9d6de86eb10e3d5d56a5f275a8f9836e50007529"
     },
     "AIOS/scripts/selftest-all.py": {
       "bytes": 1473,
@@ -640,9 +640,9 @@
       "sha256": "7c9f3d358c3a270eb7b87f3e3687b09803531128102f049850cb94d38f7a072f"
     },
     "README.md": {
-      "bytes": 8778,
+      "bytes": 8875,
       "class": "seed",
-      "sha256": "d1943f516b7d3260cbba9c8183a1f5c0c7aaf0625254314b487a366349ae44e4"
+      "sha256": "b9d25554f1a00db9cb5429e599ce1e8bb364e5a5e5d78f3564e88f64c7098651"
     },
     "UPDATE-MY-VAULT.md": {
       "bytes": 6845,
@@ -650,5 +650,5 @@
       "sha256": "b671e04ec9e727c12692c396dd33f15447b18d63919aa31064018b911a9ab602"
     }
   },
-  "generated": "2026-10-06T11:02:55"
+  "generated": "2026-10-06T13:49:04"
 }

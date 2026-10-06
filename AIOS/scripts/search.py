@@ -23,8 +23,10 @@ Two modes:
   isn't running, it says so and falls back to the default mode instead of failing.
   Set OLLAMA_HOST (default http://localhost:11434) or EMBED_MODEL to change it.
 
-Keeps its word counts in AIOS/generated/search-index.json and re-reads only notes
-whose file date changed, so it stays fast as the vault grows.
+Keeps a SQLite full-text index in ~/.cache/aios/ (SQLite is built into Python;
+kept outside the vault so syncing never corrupts it) and re-reads only notes whose file date changed, so it stays fast as the
+vault grows to tens of thousands of notes. If your Python's SQLite lacks FTS5 it
+falls back to a simpler JSON index (AIOS/generated/search-index.json).
 
 Skips Privat/, AIOS/history/, AIOS/archive/, AIOS/skills/, .git, .obsidian,
 .trash. No dependencies. Plain stdlib. Never reads Privat/.
@@ -33,6 +35,8 @@ import json
 import math
 import os
 import re
+import shutil
+import sqlite3
 import sys
 import tempfile
 import threading
@@ -133,6 +137,69 @@ def bm25(docs, query, k1=1.5, b=0.75):
     return scores
 
 
+
+
+def db_path(root):
+    """Outside the vault on purpose: a SQLite file inside a synced folder (Dropbox, Syncthing)
+    can be corrupted when two computers write it. One cache file per vault, rebuilt on demand."""
+    import hashlib
+    base = os.environ.get("AIOS_CACHE_DIR") or os.path.join(os.path.expanduser("~"), ".cache", "aios")
+    os.makedirs(base, exist_ok=True)
+    return os.path.join(base, "search-" + hashlib.sha1(os.path.abspath(root).encode()).hexdigest()[:10] + ".db")
+
+
+def has_fts5():
+    try:
+        sqlite3.connect(":memory:").execute("create virtual table t using fts5(a)")
+        return True
+    except sqlite3.Error:
+        return False
+
+
+def fts_scores(root, listing, query, limit=200):
+    """Ranked matches from a SQLite full-text index (FTS5, built into Python). Only notes whose
+    file date changed are re-read. Scales to tens of thousands of notes; the title counts 5x."""
+    con = sqlite3.connect(db_path(root))
+    try:
+        con.execute("create table if not exists notes(path text primary key, mtime real, id integer)")
+        con.execute("create virtual table if not exists docs using fts5(title, body, tokenize='porter unicode61')")
+        have = {p: (m, i) for p, m, i in con.execute("select path, mtime, id from notes")}
+        for p, m in listing.items():
+            if p in have and have[p][0] == m:
+                continue
+            if p in have:
+                con.execute("delete from docs where rowid=?", (have[p][1],))
+            cur = con.execute("insert into docs(title, body) values (?, ?)",
+                              (os.path.splitext(os.path.basename(p))[0], read_note(os.path.join(root, p))))
+            con.execute("insert or replace into notes values (?, ?, ?)", (p, m, cur.lastrowid))
+        for p in set(have) - set(listing):
+            con.execute("delete from docs where rowid=?", (have[p][1],))
+            con.execute("delete from notes where path=?", (p,))
+        con.commit()
+        terms = [w for w in re.findall(r"[A-Za-z0-9]+", query) if len(w) > 1 and w.lower() not in STOP]
+        if not terms:
+            return {}
+        rows = con.execute("select n.path, bm25(docs, 5.0, 1.0) from docs join notes n on n.id = docs.rowid "
+                           "where docs match ? order by 2 limit ?",
+                           (" OR ".join(f'"{w}"' for w in terms), limit)).fetchall()
+        return {p: -s for p, s in rows}
+    finally:
+        con.close()
+
+
+def word_scores(root, listing, query):
+    """Pick the best available index: SQLite full-text, or the plain JSON one if SQLite lacks FTS5."""
+    if os.environ.get("SEARCH_BACKEND") != "json" and has_fts5():
+        try:
+            return fts_scores(root, listing, query)
+        except sqlite3.Error:                      # damaged index file: rebuild it once from the notes
+            for f in (db_path(root), db_path(root) + "-wal", db_path(root) + "-shm"):
+                if os.path.exists(f):
+                    os.remove(f)
+            return fts_scores(root, listing, query)
+    return bm25(build_index(root, listing), query)
+
+
 def embed(text, model, host):
     """One vector for `text`. Uses Ollama's current /api/embed; older servers get /api/embeddings."""
     def post(path, body):
@@ -193,7 +260,7 @@ def snippet(text, query):
 
 def search(query, root=VAULT, top=8, use_semantic=False, model=None, host=None):
     listing = list_notes(root)
-    ranks = [bm25(build_index(root, listing), query)]
+    ranks = [word_scores(root, listing, query)]
     note = ""
     if use_semantic:
         try:
@@ -224,6 +291,19 @@ def main(argv):
 
 
 def selftest():
+    os.environ["AIOS_CACHE_DIR"] = tempfile.mkdtemp(prefix="aios-cache-")
+    for backend in ("fts", "json"):
+        os.environ["SEARCH_BACKEND"] = backend
+        if backend == "fts" and not has_fts5():
+            continue
+        _selftest_once()
+    os.environ.pop("SEARCH_BACKEND", None)
+    shutil.rmtree(os.environ.pop("AIOS_CACHE_DIR"), ignore_errors=True)
+    print("search.py selftest: ok")
+    return 0
+
+
+def _selftest_once():
     import http.server
 
     class Fake(http.server.BaseHTTPRequestHandler):
@@ -292,8 +372,6 @@ def selftest():
         srv.shutdown()
         rows, note = search("brakes", t, use_semantic=True, host="http://127.0.0.1:9")   # nothing listening
         assert "unavailable" in note and rows, (rows, note)                              # falls back, doesn't fail
-    print("search.py selftest: ok")
-    return 0
 
 
 if __name__ == "__main__":

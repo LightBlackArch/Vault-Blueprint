@@ -102,9 +102,10 @@ Read this before you rely on it. These are the real weak spots, not hedging.
   is shown to you in plain English first and backed up, but you are trusting the
   repo. To trust only what you reviewed, pin a tag: `blueprint-update.py --branch <tag>`
   (needs git).
-- **Search re-reads only changed notes**, which is fast to about a few thousand
-  notes. Beyond that, a database-backed tool such as Open Second Brain is built
-  for it.
+- **Search is a SQLite full-text index** (built into Python, stored in
+  `~/.cache/aios/`, rebuilt on demand), fine for tens of thousands of notes.
+  It ranks by words, not by reranking or deeper retrieval stages; Open Second
+  Brain's retrieval engine goes further.
 
 ## Pick something else if
 

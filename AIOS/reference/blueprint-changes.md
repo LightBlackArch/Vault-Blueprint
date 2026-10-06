@@ -57,6 +57,21 @@ are.
 
 ## Changes
 
+### id: search-on-a-real-index
+title: Search uses a proper full-text index and the empty Privat folder is no longer shipped
+files: AIOS/scripts/search.py
+needs: nothing
+
+`search.py` now builds a SQLite full-text index (SQLite is already part of
+Python, nothing to install) and keeps it in `~/.cache/aios/` rather than inside
+your vault, so a synced folder like Dropbox can never corrupt it. Searches
+stay fast as your vault grows to tens of thousands of notes, the title of a note
+counts more than its body, and if the index is ever damaged it simply rebuilds.
+If your Python lacks full-text support it falls back to the older, simpler
+index. The blueprint also stopped shipping an empty `Privat/` placeholder
+folder; if you have your own, every script still skips it exactly as before.
+
+
 ### id: tested-scripts-faster-search-rule-review
 title: Everything is tested in one command, search stays fast, and learned rules wait for your OK
 files: AIOS/scripts/selftest-all.py, AIOS/scripts/blueprint-update.py, AIOS/scripts/blueprint-manifest.py, AIOS/scripts/search.py, AIOS/scripts/dream.py
