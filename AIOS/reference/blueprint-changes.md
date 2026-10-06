@@ -72,13 +72,16 @@ once that Python would automate it. This file holds your own wording, so a scrip
 never writes it: your AI adds that one paragraph by hand when you accept this.
 
 ### id: windows-tested
-title: The test runs on GitHub now include Windows
-files: AIOS/scripts/graph.py
+title: Windows fix: search and links no longer look inside folders they should skip
+files: AIOS/scripts/graph.py, AIOS/scripts/search.py
 needs: nothing
 
-The blueprint's automatic tests now run on Windows as well as Linux and macOS, so
-a Windows-only break shows up before it reaches you. One test that relied on a
-shell script is skipped on Windows. Nothing in your own notes is touched.
+The blueprint's automatic tests now run on Windows as well as Linux and macOS, and
+the first Windows run found a real bug: on Windows, search and the link tools did
+not skip the folders they are meant to skip (a private folder, history), because
+of how Windows writes folder paths. They would have indexed and searched them.
+That is fixed, and the tests now check it on all three systems. On Linux and macOS
+nothing changes. Nothing in your own notes is touched.
 
 ### id: one-command
 title: One command with six verbs instead of fifty scripts to remember

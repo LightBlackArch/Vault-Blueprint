@@ -51,7 +51,7 @@ def build(root=VAULT):
     for d, dirs, files in os.walk(root):
         rel = os.path.relpath(d, root)
         dirs[:] = [x for x in dirs
-                   if not any(os.path.join(rel, x).lstrip("./").startswith(s) for s in SKIP)]
+                   if not any(os.path.normpath(os.path.join(rel, x)).startswith(s) for s in SKIP)]
         for f in files:
             if f.endswith(".md"):
                 notes.append(os.path.join(d, f))
@@ -84,7 +84,7 @@ def mentions(root=VAULT):
     for d, dirs, files in os.walk(root):
         rel = os.path.relpath(d, root)
         dirs[:] = [x for x in dirs
-                   if not any(os.path.join(rel, x).lstrip("./").startswith(s) for s in SKIP)]
+                   if not any(os.path.normpath(os.path.join(rel, x)).startswith(s) for s in SKIP)]
         for f in files:
             if f.endswith(".md"):
                 key = os.path.splitext(f)[0].lower()
@@ -121,7 +121,7 @@ def note_path(root, key):
     for d, dirs, files in os.walk(root):
         rel = os.path.relpath(d, root)
         dirs[:] = [x for x in dirs
-                   if not any(os.path.join(rel, x).lstrip("./").startswith(s) for s in SKIP)]
+                   if not any(os.path.normpath(os.path.join(rel, x)).startswith(s) for s in SKIP)]
         for f in files:
             if f.endswith(".md") and os.path.splitext(f)[0].lower() == key:
                 return os.path.join(d, f)

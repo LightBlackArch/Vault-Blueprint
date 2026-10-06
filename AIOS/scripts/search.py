@@ -80,7 +80,7 @@ def list_notes(root=VAULT):
     for d, dirs, files in os.walk(root):
         rel = os.path.relpath(d, root)
         dirs[:] = [x for x in dirs
-                   if not any(os.path.join(rel, x).lstrip("./").startswith(s) for s in SKIP)]
+                   if not any(os.path.normpath(os.path.join(rel, x)).startswith(s) for s in SKIP)]
         for f in files:
             if f.endswith(".md"):
                 p = os.path.join(d, f)
