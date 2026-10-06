@@ -57,6 +57,19 @@ are.
 
 ## Changes
 
+### id: one-command
+title: One command with six verbs instead of fifty scripts to remember
+files: vault, AIOS/scripts/vault.py, AIOS/scripts/dream.py
+needs: nothing
+
+You no longer need to know the scripts exist. `python3 vault` lists six things you
+can do: `find` a note, see what `links` to it, `remember` a rule, look at `recent`
+sessions, `check` the vault is healthy, and `update` from the blueprint. Each one
+just runs the script that already did the job, so nothing changed underneath and
+the old commands still work. Listing your learned rules before you have any now
+tells you how to add one instead of printing nothing.
+
+
 ### id: search-on-a-real-index
 title: Search uses a proper full-text index and the empty Privat folder is no longer shipped
 files: AIOS/scripts/search.py

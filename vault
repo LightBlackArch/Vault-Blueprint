@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+"""The one command. Run `python3 vault` for the list. Code lives in AIOS/scripts/vault.py."""
+import os
+import runpy
+import sys
+
+runpy.run_path(os.path.join(os.path.dirname(os.path.abspath(__file__)), "AIOS", "scripts", "vault.py"),
+               run_name="__main__")

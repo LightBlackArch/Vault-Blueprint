@@ -61,6 +61,7 @@ SKIP = (".git/", "Privat/", "__pycache__/", ".obsidian/workspace",
 RULES = [
     ("AIOS/config/blueprint-manifest.json", "never"),   # itself
     ("AIOS/config/blueprint-state.json", "never"),      # per-person state
+    ("vault", "system"),                                # the one-command launcher
     (".github/", "never"),                              # the blueprint's own CI, not for anyone's vault
     # First-run scaffolding. README-START-HERE tells people to delete all of
     # this once they're set up, so the updater must never offer it back — that

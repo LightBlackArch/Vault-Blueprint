@@ -7,7 +7,7 @@
     "system": "Blueprint owns it. Updated in place unless the user edited it, in which case they're asked."
   },
   "_what": "Every file this blueprint ships, and how much of it belongs to the blueprint versus to the person using it. Read by AIOS/scripts/blueprint-update.py. Generated \u2014 do not hand-edit; change the rules in AIOS/scripts/blueprint-manifest.py instead.",
-  "count": 128,
+  "count": 130,
   "files": {
     ".gitignore": {
       "bytes": 727,
@@ -70,9 +70,9 @@
       "sha256": "0ca582caf44f59677077a202dc45cf4f9ec607a5b9cc39e045238c910f16f8dd"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 34878,
+      "bytes": 35509,
       "class": "system",
-      "sha256": "04c7939f3ce8489e9596a3d63a040694df1d73ca8856015fdd2818af976e33e9"
+      "sha256": "4d71ffbad4a3a989021e20d214531eef96f569c5982e31520daf1102c409b569"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -125,9 +125,9 @@
       "sha256": "8708ae295e93ef7e7ca3a1fd0305f2e4d551dbc00b9c6ccc78efc99fcb3101ce"
     },
     "AIOS/scripts/blueprint-manifest.py": {
-      "bytes": 7845,
+      "bytes": 7928,
       "class": "system",
-      "sha256": "6bcde5f68fe5d73de731d585153c78b08c7c3dcc838e8d76197e03be49a67821"
+      "sha256": "cbdb64dfa564d3f1d68196fba8beb6ff88b33dde028e0fd716f5801617ddb8b6"
     },
     "AIOS/scripts/blueprint-release.py": {
       "bytes": 12292,
@@ -190,9 +190,9 @@
       "sha256": "24c63c95a07e4fe37fce24f4d4f0a35450ed1584baf3019422d096b8211bbb14"
     },
     "AIOS/scripts/dream.py": {
-      "bytes": 12230,
+      "bytes": 12369,
       "class": "system",
-      "sha256": "9a27710ebbf96c3962396e9330d14da9c3aff996457909fc1ff9161a50181216"
+      "sha256": "89a73741df877a8889450640b5800274520003e4b9cc9cd6b4a831c57860f303"
     },
     "AIOS/scripts/event.py": {
       "bytes": 17848,
@@ -349,6 +349,11 @@
       "class": "system",
       "sha256": "2336893dce9a65f0cac8f9d14e28f8c5537bb0e83ad5c8d0363b163b3cbfdb4e"
     },
+    "AIOS/scripts/vault.py": {
+      "bytes": 4186,
+      "class": "system",
+      "sha256": "eb714476e65872bbff5357e767dea24ead988ef5dfdb4245a6e803b0e76aa1c2"
+    },
     "AIOS/scripts/verify.py": {
       "bytes": 4851,
       "class": "system",
@@ -370,9 +375,9 @@
       "sha256": "7a6ba6783a03bd07aa56e7530d715c20f69f5ebc4ab854437ec4ef223334c134"
     },
     "AIOS/skill-map.md": {
-      "bytes": 13899,
+      "bytes": 14292,
       "class": "brain",
-      "sha256": "85bb159d7b4ee1f3fdb7ec4ad12452bd49dba460d2f781e293eb70f8ab65b2dc"
+      "sha256": "4df2fcf31d47cf04f6b891afb7f2127e81613711d555bf12a5bbb38fcf35175b"
     },
     "AIOS/skills/README.md": {
       "bytes": 4519,
@@ -640,15 +645,20 @@
       "sha256": "7c9f3d358c3a270eb7b87f3e3687b09803531128102f049850cb94d38f7a072f"
     },
     "README.md": {
-      "bytes": 8875,
+      "bytes": 9622,
       "class": "seed",
-      "sha256": "b9d25554f1a00db9cb5429e599ce1e8bb364e5a5e5d78f3564e88f64c7098651"
+      "sha256": "00c6fe81629aeb912be6462c82677cf9853b49bc2918c9e1dda9de21760ce047"
     },
     "UPDATE-MY-VAULT.md": {
       "bytes": 6845,
       "class": "system",
       "sha256": "b671e04ec9e727c12692c396dd33f15447b18d63919aa31064018b911a9ab602"
+    },
+    "vault": {
+      "bytes": 292,
+      "class": "system",
+      "sha256": "7837e4f927d0421548ead054981327b2b83f14f44917bae1a6824378549658ac"
     }
   },
-  "generated": "2026-10-06T13:49:04"
+  "generated": "2026-10-06T14:05:35"
 }

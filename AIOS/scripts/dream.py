@@ -226,6 +226,8 @@ def main(argv):
                   f"{sum(1 for x in rows if x[0]=='candidate')} candidate, "
                   f"{sum(1 for x in rows if x[0]=='expired')} expired")
         else:
+            if not rows:
+                print('No rules yet. Teach one with: python3 vault remember "never delete files without asking"')
             for status, c, age, r in sorted(rows, key=lambda x: (x[0], -x[1])):
                 print(f"{status:9} {c:.2f} {age:4d}d  {r['text']}")
     return 0

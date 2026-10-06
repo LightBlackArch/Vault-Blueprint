@@ -4,6 +4,24 @@
 
 ![selftests](https://github.com/LightBlackArch/Vault-Blueprint/actions/workflows/ci.yml/badge.svg)
 
+## Start in three steps
+
+1. Download this folder (green **Code** button, then **Download ZIP**) and open it in Obsidian.
+2. Open the same folder in Claude Code or Claude Cowork and say: `set yourself up`
+3. Use it. One command does the rest, and it has six verbs:
+
+| You want to | Run |
+|---|---|
+| find a note | `python3 vault find "words"` |
+| see how notes connect | `python3 vault links "Note"` |
+| teach it a rule | `python3 vault remember "never do X"` |
+| recall past sessions | `python3 vault recent` |
+| check everything works | `python3 vault check` |
+| get blueprint updates | `python3 vault update` |
+
+Needs only Python 3. Everything it remembers is plain markdown you can read and edit.
+The rest of this page is detail you can skip.
+
 **An Obsidian vault an AI actually runs — for your whole life, not just your
 projects. It remembers, corrects itself when you correct it, and updates
 without ever overwriting what you wrote.**
