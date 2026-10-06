@@ -300,9 +300,9 @@
       "sha256": "63c4ca8837490b1337cb70fa9d6de86eb10e3d5d56a5f275a8f9836e50007529"
     },
     "AIOS/scripts/selftest-all.py": {
-      "bytes": 1473,
+      "bytes": 1836,
       "class": "system",
-      "sha256": "a503dccf0466ced039d6081eea7d623bedf9465db8fcb2c011dc167c36900b82"
+      "sha256": "5c62dd4ac2a6bffa8e5f84dd67f2b3b7eb1c45ea323fcedebfe0c9a49950bef1"
     },
     "AIOS/scripts/session-digest.py": {
       "bytes": 9029,
@@ -660,5 +660,5 @@
       "sha256": "7837e4f927d0421548ead054981327b2b83f14f44917bae1a6824378549658ac"
     }
   },
-  "generated": "2026-10-06T14:14:37"
+  "generated": "2026-10-06T14:16:23"
 }
