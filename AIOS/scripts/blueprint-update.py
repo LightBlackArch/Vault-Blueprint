@@ -750,6 +750,41 @@ def interactive(plan, bp_root, state):
 
 # --------------------------------------------------------------------------
 
+def selftest():
+    """Run the updater end to end on throwaway copies: a missing system script comes back,
+    a hand-edited me.md and a Privat/ file are never touched, and --undo reverses it."""
+    import filecmp
+    with tempfile.TemporaryDirectory(prefix="bp-selftest-") as t:
+        t = Path(t)
+        skip = shutil.ignore_patterns(".git", "__pycache__", "Privat", "history", "generated")
+        shutil.copytree(VAULT, t / "bp", ignore=skip)
+        shutil.copytree(VAULT, t / "vault", ignore=skip)
+        down = t / "vault"
+        (down / "AIOS" / "scripts" / "weekly-digest.py").unlink()            # a system file the user lacks
+        mine = down / "AIOS" / "me.md"
+        mine.write_text(mine.read_text(encoding="utf-8") + "\nMY OWN LINE\n", encoding="utf-8")
+        (down / "Privat").mkdir()
+        (down / "Privat" / "diary.md").write_text("secret", encoding="utf-8")
+        me_before, diary_before = mine.read_bytes(), (down / "Privat" / "diary.md").read_bytes()
+
+        def run(*a):
+            return subprocess.run([sys.executable, str(down / "AIOS" / "scripts" / "blueprint-update.py"),
+                                   "--from", str(t / "bp"), *a], capture_output=True, text=True, timeout=120)
+        plan = json.loads(run("--json").stdout)
+        assert any("weekly-digest.py" in f for p in plan["proposals"] for f in p["files"]), "missing file not proposed"
+        r = run("--apply", "all")
+        assert r.returncode == 0, r.stderr
+        assert (down / "AIOS" / "scripts" / "weekly-digest.py").exists(), "system file not restored"
+        assert mine.read_bytes() == me_before, "me.md was written"
+        assert (down / "Privat" / "diary.md").read_bytes() == diary_before, "Privat/ was touched"
+        u = subprocess.run([sys.executable, str(down / "AIOS" / "scripts" / "blueprint-update.py"), "--undo"],
+                           capture_output=True, text=True, timeout=120)
+        assert not (down / "AIOS" / "scripts" / "weekly-digest.py").exists(), "undo did not remove it"
+        assert mine.read_bytes() == me_before and u.returncode == 0
+    print("blueprint-update.py selftest: ok")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(
         description="Pull improvements from the Vault Blueprint into your vault.")
@@ -761,6 +796,7 @@ def main():
     ap.add_argument("--apply", metavar="N,N|all")
     ap.add_argument("--decline", metavar="N,N")
     ap.add_argument("--undo", action="store_true")
+    ap.add_argument("--selftest", action="store_true", help="test the updater on throwaway copies")
     ap.add_argument("--check", action="store_true",
                     help="one line, exits 1 if updates are waiting")
     ap.add_argument("--json", action="store_true", help="machine-readable plan")
@@ -771,6 +807,9 @@ def main():
                     help="let the script write brain/seed files too. Only for "
                          "an AI that has already merged them, or a fresh vault.")
     args = ap.parse_args()
+
+    if args.selftest:
+        return selftest()
 
     if args.undo:
         print(undo_last())
