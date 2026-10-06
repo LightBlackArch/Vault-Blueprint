@@ -2,6 +2,8 @@
 
 *An Obsidian second brain for Claude Code and Claude Cowork: persistent AI memory in plain markdown, free, MIT.*
 
+![selftests](https://github.com/LightBlackArch/Vault-Blueprint/actions/workflows/ci.yml/badge.svg)
+
 **An Obsidian vault an AI actually runs — for your whole life, not just your
 projects. It remembers, corrects itself when you correct it, and updates
 without ever overwriting what you wrote.**
@@ -26,9 +28,11 @@ part that actually breaks in practice:
 
 - **Updates don't cost you your notes.** Every file the blueprint ships is
   labelled `system` / `seed` / `brain` / `structure` / `setup`. A three-way
-  merge compares the blueprint's latest version, your copy, and what you
+  comparison checks the blueprint's latest version, your copy, and what you
   last pulled — so "you never touched this, take the new one" and "you
-  edited this yourself, ask first" are never confused. Files with *you* in
+  edited this yourself, ask first" are never confused. (It replaces or
+  leaves a whole file; it does not merge line by line. A file you edited is
+  shown to you as a diff and left alone.) Files with *you* in
   them (`me.md`, `vault-map.md`, `skill-map.md`) can never be silently
   overwritten by a script — full stop, not a setting. Every change is
   described in one plain-English sentence before you approve it, and
@@ -79,6 +83,37 @@ and each one falls back cleanly if you skip it:
 
 Every script has `--selftest`, so you can check it works on your machine.
 
+## Honest limits
+
+Read this before you rely on it. These are the real weak spots, not hedging.
+
+- **It is young and has few users.** Built in August 2026 and run daily by its
+  author. No outside reports yet, so bugs that only appear on other setups are
+  still undiscovered. `selftest-all.py` runs in CI on Linux and macOS; Windows is
+  untested.
+- **Capture is the AI following instructions.** `auto-capture` is a skill the
+  model is told to obey, with a cron script that notices when a whole day passed
+  with nothing written. It cannot tell *what* was missed. Tools that use Claude
+  Code hooks capture mechanically; this one does not unless you add hooks.
+- **`Privat/` is guarded by the scripts and the updater, and by a rule in
+  `CLAUDE.md`.** An AI with file access could still open it if told to. If that
+  matters, add a permission rule in your AI tool's settings that denies the folder.
+- **Updates download this repo over HTTPS with no signature check.** Every change
+  is shown to you in plain English first and backed up, but you are trusting the
+  repo. To trust only what you reviewed, pin a tag: `blueprint-update.py --branch <tag>`
+  (needs git).
+- **Search re-reads only changed notes**, which is fast to about a few thousand
+  notes. Beyond that, a database-backed tool such as Open Second Brain is built
+  for it.
+
+## Pick something else if
+
+- You code only in Claude Code and want sessions remembered with no effort:
+  [claude-mem](https://github.com/thedotmack/claude-mem) captures automatically.
+- You need many AI clients, tests-backed releases and a retrieval engine:
+  [Open Second Brain](https://github.com/itechmeat/open-second-brain).
+- You want to navigate a large codebase: [Graphify](https://github.com/Graphify-Labs/graphify).
+
 ---
 
 ## Quick start
@@ -111,7 +146,7 @@ CLAUDE.md              One paragraph. The only thing an AI needs to boot.
 AIOS/                  Identity, maps, scripts, skills, templates — the system.
   me.md                Who you are. Never touched by an update script.
   skill-map.md          What tooling exists and when it fires.
-  scripts/              ~35 small, dependency-free Python scripts.
+  scripts/              50 small, dependency-free Python scripts (`selftest-all.py` tests them).
   skills/               auto-capture, no-bullshit, vault-first, vault-librarian,
                          daily-brief, setup-vault, update-vault.
 Atlas/                  Knowledge, reference, media, research — timeless material.

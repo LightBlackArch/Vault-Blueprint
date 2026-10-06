@@ -23,6 +23,9 @@ Two modes:
   isn't running, it says so and falls back to the default mode instead of failing.
   Set OLLAMA_HOST (default http://localhost:11434) or EMBED_MODEL to change it.
 
+Keeps its word counts in AIOS/generated/search-index.json and re-reads only notes
+whose file date changed, so it stays fast as the vault grows.
+
 Skips Privat/, AIOS/history/, AIOS/archive/, AIOS/skills/, .git, .obsidian,
 .trash. No dependencies. Plain stdlib. Never reads Privat/.
 """
@@ -58,7 +61,17 @@ def tokens(text):
     return out
 
 
-def load_notes(root=VAULT):
+INDEX = os.path.join("AIOS", "generated", "search-index.json")
+READS = {"n": 0}                     # how many notes were opened; the selftest watches this
+
+
+def read_note(path):
+    READS["n"] += 1
+    return open(path, encoding="utf-8", errors="ignore").read()
+
+
+def list_notes(root=VAULT):
+    """{relative path: mtime} for every note. Only looks at file dates; opens nothing."""
     notes = {}
     for d, dirs, files in os.walk(root):
         rel = os.path.relpath(d, root)
@@ -68,27 +81,53 @@ def load_notes(root=VAULT):
             if f.endswith(".md"):
                 p = os.path.join(d, f)
                 try:
-                    notes[os.path.relpath(p, root)] = (open(p, encoding="utf-8", errors="ignore").read(),
-                                                       os.path.getmtime(p))
+                    notes[os.path.relpath(p, root)] = os.path.getmtime(p)
                 except OSError:
                     pass
     return notes
 
 
-def bm25(notes, query, k1=1.5, b=0.75):
-    docs = {p: tokens(os.path.splitext(os.path.basename(p))[0]) * 3 + tokens(t) for p, (t, _) in notes.items()}
+def save_json(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    json.dump(data, open(tmp, "w", encoding="utf-8"))
+    os.replace(tmp, path)
+
+
+def build_index(root, listing):
+    """Word counts per note, kept on disk. Only notes whose date changed are read again."""
+    ip = os.path.join(root, INDEX)
+    try:
+        cache = json.load(open(ip, encoding="utf-8"))
+    except (OSError, ValueError):
+        cache = {}
+    changed = False
+    for p, m in listing.items():
+        if cache.get(p, {}).get("mtime") != m:
+            toks = tokens(os.path.splitext(os.path.basename(p))[0]) * 3 + tokens(read_note(os.path.join(root, p)))
+            cache[p] = {"mtime": m, "tf": dict(Counter(toks)), "len": len(toks)}
+            changed = True
+    for p in [k for k in cache if k not in listing]:
+        del cache[p]
+        changed = True
+    if changed:
+        save_json(ip, cache)
+    return {p: cache[p] for p in listing}
+
+
+def bm25(docs, query, k1=1.5, b=0.75):
     n = len(docs) or 1
-    avg = sum(len(d) for d in docs.values()) / n or 1
-    df = Counter(w for d in docs.values() for w in set(d))
+    avg = sum(d["len"] for d in docs.values()) / n or 1
+    df = Counter(w for d in docs.values() for w in d["tf"])
     q = set(tokens(query))
     scores = {}
     for p, d in docs.items():
-        tf = Counter(d)
         s = 0.0
         for w in q:
-            if tf[w]:
+            f = d["tf"].get(w, 0)
+            if f:
                 idf = math.log(1 + (n - df[w] + 0.5) / (df[w] + 0.5))
-                s += idf * tf[w] * (k1 + 1) / (tf[w] + k1 * (1 - b + b * len(d) / avg))
+                s += idf * f * (k1 + 1) / (f + k1 * (1 - b + b * d["len"] / avg))
         if s:
             scores[p] = s
     return scores
@@ -115,7 +154,7 @@ def cosine(a, b):
     return sum(x * y for x, y in zip(a, b)) / (na * nb) if na and nb else 0.0
 
 
-def semantic(notes, query, root, model, host):
+def semantic(listing, query, root, model, host):
     """Cosine score per note against the query. Raises if the model is unreachable."""
     cache_path = os.path.join(root, "AIOS", "generated", "embeddings.json")
     try:
@@ -125,16 +164,14 @@ def semantic(notes, query, root, model, host):
     if cache.get("_model") != model:
         cache = {"_model": model}
     qv = embed(query, model, host)
-    for p, (text, mtime) in notes.items():
+    for p, mtime in listing.items():
         if cache.get(p, {}).get("mtime") != mtime:
-            cache[p] = {"mtime": mtime, "v": embed(os.path.basename(p) + "\n" + text, model, host)}
-    for p in [k for k in cache if k != "_model" and k not in notes]:
+            cache[p] = {"mtime": mtime,
+                        "v": embed(os.path.basename(p) + "\n" + read_note(os.path.join(root, p)), model, host)}
+    for p in [k for k in cache if k != "_model" and k not in listing]:
         del cache[p]
-    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
-    tmp = cache_path + ".tmp"
-    json.dump(cache, open(tmp, "w", encoding="utf-8"))
-    os.replace(tmp, cache_path)
-    return {p: cosine(qv, cache[p]["v"]) for p in notes}
+    save_json(cache_path, cache)
+    return {p: cosine(qv, cache[p]["v"]) for p in listing}
 
 
 def fuse(*rankings):
@@ -155,18 +192,18 @@ def snippet(text, query):
 
 
 def search(query, root=VAULT, top=8, use_semantic=False, model=None, host=None):
-    notes = load_notes(root)
-    ranks = [bm25(notes, query)]
+    listing = list_notes(root)
+    ranks = [bm25(build_index(root, listing), query)]
     note = ""
     if use_semantic:
         try:
-            ranks.append(semantic(notes, query, root, model or os.environ.get("EMBED_MODEL", "nomic-embed-text"),
+            ranks.append(semantic(listing, query, root, model or os.environ.get("EMBED_MODEL", "nomic-embed-text"),
                                   host or os.environ.get("OLLAMA_HOST", "http://localhost:11434")))
         except Exception as e:
             note = f"(--semantic unavailable: {e}. Showing word-ranked results. Is Ollama running?)"
     final = fuse(*ranks) if len(ranks) > 1 else ranks[0]
     rows = sorted(final, key=final.get, reverse=True)[:top]
-    return [(p, snippet(notes[p][0], query)) for p in rows], note
+    return [(p, snippet(read_note(os.path.join(root, p)), query)) for p in rows], note
 
 
 def main(argv):
@@ -227,6 +264,19 @@ def selftest():
         rows, _ = search("backing up chats", t)
         assert rows[0][0] == os.path.join("Atlas", "Backups.md"), rows                     # stemming: backing/back up
         assert tokens("Backups") == tokens("backup") or tokens("backups")[0].startswith("backup")
+        # the saved index: later searches open only the few result notes, not the whole vault
+        for i in range(40):
+            w(f"Filler/n{i}.md", f"filler note number {i} about gardening")
+        search("gardening", t)                                  # builds the index (reads everything once)
+        before = READS["n"]
+        search("brakes", t)
+        assert READS["n"] - before <= 8, READS["n"] - before    # only result snippets, not 44 notes
+        w("Filler/new.md", "a fresh note about telescopes")
+        before = READS["n"]
+        rows, _ = search("telescopes", t)
+        assert rows[0][0] == os.path.join("Filler", "new.md") and READS["n"] - before <= 3
+        os.remove(os.path.join(t, "Filler", "new.md"))
+        assert search("telescopes", t)[0] == []                 # deleted notes drop out of the index
         # by meaning: 'automobile' is not in any note, only the embedding links it to 'car'
         assert search("automobile", t)[0] == []
         srv = http.server.HTTPServer(("127.0.0.1", 0), Fake)

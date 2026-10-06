@@ -15,6 +15,8 @@ always gives the same answer.
 
     python3 AIOS/scripts/dream.py signal "<rule>" [--date YYYY-MM-DD]
     python3 AIOS/scripts/dream.py use "<rule or id>"   # it came up again and held
+    python3 AIOS/scripts/dream.py pin "<rule or id>"   # you reviewed it: confirmed, never expires
+    python3 AIOS/scripts/dream.py reject "<rule or id>" # wrong: kept on record, never learned again
     python3 AIOS/scripts/dream.py run                  # recompute, rewrite the report
     python3 AIOS/scripts/dream.py list
     python3 AIOS/scripts/dream.py rollback             # undo the last change
@@ -22,6 +24,8 @@ always gives the same answer.
 
 Confidence = min(1, count / 5) x 0.5 ^ (days since last seen / 45).
 Confirmed = seen 3+ times AND confidence >= 0.4. Expired = unseen 120+ days.
+A confirmed rule stays "not yet reviewed" in the report until you `pin` it, so nothing
+becomes a standing rule without you seeing it. `reject` is permanent and survives rollback of other changes.
 
 Data: AIOS/data/rules.json. Report (never hand-edit): AIOS/generated/learned-rules.md.
 Every change first copies the data to AIOS/history/dream-snapshots/ (newest 20
@@ -93,6 +97,10 @@ def save(root, data):
 def score(rule, today):
     age = max(0, (today - dt.date.fromisoformat(rule["last"])).days)
     conf = min(1.0, rule["count"] / 5) * 0.5 ** (age / HALF_LIFE)
+    if rule.get("rejected"):
+        return 0.0, "rejected", age
+    if rule.get("pinned"):
+        return max(conf, 0.4), "confirmed", age
     if age >= EXPIRE_DAYS:
         status = "expired"
     elif rule["count"] >= CONFIRM_COUNT and conf >= CONFIRM_CONF:
@@ -113,16 +121,41 @@ def report(root, today):
            "correction with `dream.py signal`. Confidence rises with repetition and "
            f"halves every {HALF_LIFE} days unused.", ""]
     for title, key in (("Confirmed", "confirmed"), ("Candidates (not yet seen enough)", "candidate"),
-                       (f"Expired (unseen {EXPIRE_DAYS}+ days)", "expired")):
+                       (f"Expired (unseen {EXPIRE_DAYS}+ days)", "expired"), ("Rejected (never learned again)", "rejected")):
         sel = sorted((x for x in rows if x[0] == key), key=lambda x: (-x[1], x[3]["text"]))
+        if key == "confirmed":
+            sel = [x for x in sel if x[3].get("pinned")] + [x for x in sel if not x[3].get("pinned")]
         out += [f"## {title}", ""]
         out += [f"- **{c:.2f}** {r['text']} — seen {r['count']}x, last {r['last']} (`{rid(r['text'])}`)"
+                + (" — pinned" if r.get("pinned") else " — not yet reviewed; `dream.py pin` or `reject`" if key == "confirmed" else "")
                 for _, c, _, r in sel] or ["- none"]
         out.append("")
     p = paths(root)[1]
     os.makedirs(os.path.dirname(p), exist_ok=True)
     open(p, "w", encoding="utf-8").write("\n".join(out))
     return rows
+
+
+def find(data, key):
+    """A rule by id prefix, exact wording, or reworded match."""
+    k = rid(key)
+    if k in data["rules"]:
+        return k
+    return next((x for x, v in data["rules"].items() if x.startswith(key.strip()) or similar(v["text"], key)), None)
+
+
+def mark(root, key, field):
+    data = load(root)
+    k = find(data, key)
+    if k is None:
+        sys.exit(f"no rule matches '{key}'")
+    data["rules"][k][field] = True
+    if field == "rejected":
+        data["rules"][k].pop("pinned", None)
+    else:
+        data["rules"][k].pop("rejected", None)
+    save(root, data)
+    return data["rules"][k]
 
 
 def signal(root, text, day, bump=1, use=False):
@@ -137,6 +170,8 @@ def signal(root, text, day, bump=1, use=False):
     if r is None and not use:                      # said differently before? count it as the same rule
         k = next((x for x, v in data["rules"].items() if similar(v["text"], text)), k)
         r = data["rules"].get(k)
+    if r is not None and r.get("rejected"):
+        return r                                   # rejected rules are never counted again
     if r is None:
         r = data["rules"][k] = {"text": text.strip(), "count": 0, "first": day, "last": day, "uses": 0}
     if use:
@@ -161,7 +196,7 @@ def rollback(root):
 def main(argv):
     if argv and argv[0] == "--selftest":
         return selftest()
-    if not argv or argv[0] not in ("signal", "use", "run", "list", "rollback"):
+    if not argv or argv[0] not in ("signal", "use", "run", "list", "rollback", "pin", "reject"):
         print(__doc__)
         return 0
     cmd, rest = argv[0], argv[1:]
@@ -177,6 +212,11 @@ def main(argv):
         r = signal(VAULT, rest[0], day, use=(cmd == "use"))
         conf, status, _ = score(r, dt.date.fromisoformat(day))
         print(f"{status} {conf:.2f}: {r['text']} (seen {r['count']}x)")
+    elif cmd in ("pin", "reject"):
+        if not rest:
+            sys.exit(f"usage: dream.py {cmd} \"<rule or id>\"")
+        r = mark(VAULT, rest[0], "pinned" if cmd == "pin" else "rejected")
+        print(f"{'pinned' if cmd == 'pin' else 'rejected'}: {r['text']}")
     elif cmd == "rollback":
         print("restored", rollback(VAULT))
     else:
@@ -224,7 +264,16 @@ def selftest():
         assert load(t)["rules"][rid("use short answers")]["count"] == before + 1
         rollback(t)
         assert load(t)["rules"][rid("use short answers")]["count"] == before
+        # pin: confirmed and never expires; reject: stays on record, never counted again
+        k = rid("use short answers")
+        mark(t, "use short", "pinned")
+        assert score(load(t)["rules"][k], d0 + dt.timedelta(days=900))[1] == "confirmed"
+        mark(t, k[:4], "rejected")
+        c0 = load(t)["rules"][k]["count"]
+        signal(t, "use short answers", d0.isoformat())
+        assert load(t)["rules"][k]["count"] == c0 and score(load(t)["rules"][k], d0)[1] == "rejected"
         report(t, d0 + dt.timedelta(days=100))
+        assert "## Rejected" in open(paths(t)[1]).read()
         assert "## Confirmed" in open(paths(t)[1]).read()
     print("dream.py selftest: ok")
     return 0

@@ -57,6 +57,25 @@ are.
 
 ## Changes
 
+### id: tested-scripts-faster-search-rule-review
+title: Everything is tested in one command, search stays fast, and learned rules wait for your OK
+files: AIOS/scripts/selftest-all.py, AIOS/scripts/blueprint-update.py, AIOS/scripts/blueprint-manifest.py, AIOS/scripts/search.py, AIOS/scripts/dream.py
+needs: nothing
+
+`selftest-all.py` compiles every script and runs each script's built-in
+self-test on throwaway data, so you can prove your copy works with one command.
+The updater now has its own end-to-end test: it checks that a missing script is
+restored, that a hand-edited `me.md` and anything in `Privat/` are never touched,
+and that undo puts everything back. `search.py` now keeps a saved index of word
+counts and re-reads only notes that changed, so searches stay fast as your
+vault grows (about seven times faster on a vault of several hundred notes).
+`dream.py` learned two commands: `pin` marks a rule you have reviewed and keeps
+it forever, and `reject` stops a wrong rule from ever being learned again. A rule
+that reached "confirmed" is now listed as "not yet reviewed" until you pin it, so
+nothing becomes a standing rule without you seeing it. Nothing in your own notes
+is touched.
+
+
 ### id: mcp-server-and-ai-links
 title: Other AI tools can use your vault, rewording counts as the same rule, and an optional AI link-suggester
 files: AIOS/scripts/mcp-server.py, AIOS/scripts/graph.py, AIOS/scripts/search.py, AIOS/scripts/dream.py
