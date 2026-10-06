@@ -57,6 +57,29 @@ are.
 
 ## Changes
 
+### id: python-optional
+title: Tell your AI that Python is optional
+files: CLAUDE.md
+needs: nothing
+
+Python was always described as required, but the instructions your AI follows
+call Python scripts for diary entries, change receipts and name checks, so
+without it the AI had nothing to fall back on. The blueprint's CLAUDE.md now has a
+short paragraph saying Python is optional: if there is none, or a script fails, the
+AI does the same job by hand (a one-line receipt in today's daily note, notes
+written straight into their folders, search with its own file tools) and tells you
+once that Python would automate it. This file holds your own wording, so a script
+never writes it: your AI adds that one paragraph by hand when you accept this.
+
+### id: windows-tested
+title: The test runs on GitHub now include Windows
+files: AIOS/scripts/graph.py
+needs: nothing
+
+The blueprint's automatic tests now run on Windows as well as Linux and macOS, so
+a Windows-only break shows up before it reaches you. One test that relied on a
+shell script is skipped on Windows. Nothing in your own notes is touched.
+
 ### id: one-command
 title: One command with six verbs instead of fifty scripts to remember
 files: vault, AIOS/scripts/vault.py, AIOS/scripts/dream.py

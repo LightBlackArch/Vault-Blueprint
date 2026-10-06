@@ -19,8 +19,11 @@
 | check everything works | `python3 vault check` |
 | get blueprint updates | `python3 vault update` |
 
-Needs only Python 3. Everything it remembers is plain markdown you can read and edit.
-The rest of this page is detail you can skip.
+Works on Windows, macOS and Linux. Everything it remembers is plain markdown you can
+read and edit, so you can use the vault without Python at all. Python 3 just makes it
+better: it adds the search, link queries, rule learning, session recall, health checks,
+safe updates and schedules. (On Windows type `python` or `py` where this page says
+`python3`.) The rest of this page is detail you can skip.
 
 **An Obsidian vault an AI actually runs — for your whole life, not just your
 projects. It remembers, corrects itself when you correct it, and updates
@@ -107,8 +110,7 @@ Read this before you rely on it. These are the real weak spots, not hedging.
 
 - **It is young and has few users.** Built in August 2026 and run daily by its
   author. No outside reports yet, so bugs that only appear on other setups are
-  still undiscovered. `selftest-all.py` runs in CI on Linux and macOS; Windows is
-  untested.
+  still undiscovered. `selftest-all.py` runs in CI on Linux, macOS and Windows.
 - **Capture is the AI following instructions.** `auto-capture` is a skill the
   model is told to obey, with a cron script that notices when a whole day passed
   with nothing written. It cannot tell *what* was missed. Tools that use Claude

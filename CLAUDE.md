@@ -11,6 +11,13 @@ If `AIOS/scripts/session-digest.py` exists, run `python3 AIOS/scripts/session-di
 too. It lists what recent sessions in this vault were about and which files they
 changed, so you can pick up where the last one stopped instead of asking.
 
+**Python is optional.** The scripts are automation, not requirements. If `python3`
+isn't found, try `python` (or `py` on Windows). If there is no Python at all, or a
+script errors, do not stop: do the same job by hand. Append one line to today's
+daily note under `## Changes` instead of running `logchange.py`, write diary,
+person and event notes straight into their folders, and search with your own file
+tools. Say once that Python would make this automatic, then carry on.
+
 Never read or write anything under `Privat/`.
 
 **If `AIOS/me.md` still contains `<< >>` placeholders, the vault has not been

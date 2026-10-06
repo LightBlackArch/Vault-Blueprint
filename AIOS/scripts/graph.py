@@ -258,19 +258,20 @@ def selftest():
         assert found.get(("e", "banana bread")) == 2, found       # named twice, never linked
         assert ("f", "banana bread") not in found                  # already linked: not a suggestion
         assert not any(k[1] in ("a", "b", "c", "d") for k in found)  # short titles ignored
-        # ai: a stand-in `claude` that answers with one real and one invented title
-        stub = os.path.join(t, "bin")
-        os.makedirs(stub)
-        open(os.path.join(stub, "claude"), "w").write(
-            "#!/bin/sh\nprintf 'Banana Bread :: it is about recipes\\nMade Up Note :: invented\\n'\n")
-        os.chmod(os.path.join(stub, "claude"), 0o755)
-        old_path = os.environ["PATH"]
-        os.environ["PATH"] = stub + os.pathsep + old_path
-        try:
-            got = ai_suggest(t, "A")
-        finally:
-            os.environ["PATH"] = old_path
-        assert got == ["Banana Bread :: it is about recipes"], got   # invented titles are dropped
+        if os.name != "nt":                                       # the stand-in is a shell script
+            # ai: a stand-in `claude` that answers with one real and one invented title
+            stub = os.path.join(t, "bin")
+            os.makedirs(stub)
+            open(os.path.join(stub, "claude"), "w").write(
+                "#!/bin/sh\nprintf 'Banana Bread :: it is about recipes\\nMade Up Note :: invented\\n'\n")
+            os.chmod(os.path.join(stub, "claude"), 0o755)
+            old_path = os.environ["PATH"]
+            os.environ["PATH"] = stub + os.pathsep + old_path
+            try:
+                got = ai_suggest(t, "A")
+            finally:
+                os.environ["PATH"] = old_path
+            assert got == ["Banana Bread :: it is about recipes"], got   # invented titles are dropped
         assert "Privat" not in ai_prompt("A", "x", ["Banana Bread"])
     print("graph.py selftest: ok")
     return 0
