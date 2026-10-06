@@ -1,0 +1,5 @@
+# Keep line endings identical on every OS. The updater compares file hashes, and
+# Windows git would otherwise turn every file into CRLF and make them all look changed.
+* text=auto eol=lf
+*.cmd text eol=crlf
+*.bat text eol=crlf

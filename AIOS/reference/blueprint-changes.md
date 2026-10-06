@@ -73,7 +73,7 @@ never writes it: your AI adds that one paragraph by hand when you accept this.
 
 ### id: windows-tested
 title: Windows fix: search and links no longer look inside folders they should skip
-files: AIOS/scripts/graph.py, AIOS/scripts/search.py
+files: AIOS/scripts/graph.py, AIOS/scripts/search.py, AIOS/scripts/blueprint-release.py, AIOS/scripts/blueprint-manifest.py
 needs: nothing
 
 The blueprint's automatic tests now run on Windows as well as Linux and macOS, and

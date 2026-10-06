@@ -62,6 +62,7 @@ RULES = [
     ("AIOS/config/blueprint-manifest.json", "never"),   # itself
     ("AIOS/config/blueprint-state.json", "never"),      # per-person state
     ("vault", "system"),                                # the one-command launcher
+    (".gitattributes", "never"),                        # repo plumbing, not for anyone's vault
     (".github/", "never"),                              # the blueprint's own CI, not for anyone's vault
     # First-run scaffolding. README-START-HERE tells people to delete all of
     # this once they're set up, so the updater must never offer it back — that

@@ -70,9 +70,9 @@
       "sha256": "0ca582caf44f59677077a202dc45cf4f9ec607a5b9cc39e045238c910f16f8dd"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 36893,
+      "bytes": 36964,
       "class": "system",
-      "sha256": "effea8d5a5ed0968149cba47337684054fd779702a0e88aa6e8ada435e6ee62f"
+      "sha256": "bfdfc130d7b6ebcbc629dc2cabaf051bd0ccbdb3e9291a3bd29e0a4744ddca8f"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -125,14 +125,14 @@
       "sha256": "8708ae295e93ef7e7ca3a1fd0305f2e4d551dbc00b9c6ccc78efc99fcb3101ce"
     },
     "AIOS/scripts/blueprint-manifest.py": {
-      "bytes": 7928,
+      "bytes": 8024,
       "class": "system",
-      "sha256": "cbdb64dfa564d3f1d68196fba8beb6ff88b33dde028e0fd716f5801617ddb8b6"
+      "sha256": "289e198acc1051bd44a707db9930dd7da003f1f7b97edfbb21be05cdfc4f2d49"
     },
     "AIOS/scripts/blueprint-release.py": {
-      "bytes": 12292,
+      "bytes": 12451,
       "class": "system",
-      "sha256": "b0644f188cb38584b38c96a31d367f78ab2bd9cae699442039d3e3799cdf47df"
+      "sha256": "31b2567be6fd777e77c2f34beaf205e4a0629b506b01608fcd964d6aba9cc322"
     },
     "AIOS/scripts/blueprint-update.py": {
       "bytes": 38238,
@@ -660,5 +660,5 @@
       "sha256": "7837e4f927d0421548ead054981327b2b83f14f44917bae1a6824378549658ac"
     }
   },
-  "generated": "2026-10-06T14:22:24"
+  "generated": "2026-10-06T14:28:03"
 }

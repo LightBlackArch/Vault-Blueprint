@@ -61,6 +61,8 @@ def say(good, msg):
     print(f"{OK if good else BAD} {msg}")
     if not good:
         fails.append(msg)
+        if os.environ.get("GITHUB_ACTIONS"):            # readable as an annotation on the GitHub run
+            print(f"::error title=release check::{msg}")
 
 
 def git(*a):
