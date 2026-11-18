@@ -27,6 +27,8 @@ anything that splits a list on commas).
                                    can be after a callout that follows the
                                    table — that silently breaks the table.
     --radar ITEM::TYPE::WHY::STATUS       insert a Radar row, dated today
+                                   TYPE: book, manga, anime, show, game, tool, idea, other
+                                   STATUS: want to check out, in progress, done, dropped
     --canon FACT::TRUTH::OWNER::STALE::ALLOWED   append a canon row
     --why TEXT                    override the changelog line (single action only)
     --dry-run                     print every change, write nothing

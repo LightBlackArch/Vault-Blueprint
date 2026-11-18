@@ -46,6 +46,7 @@ import scriptlog  # noqa: F401 -- logs this run to AIOS/history/scripts/
 import argparse
 import datetime as dt
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -54,6 +55,14 @@ VAULT = Path(__file__).resolve().parent.parent.parent
 STATUS_NOTE = VAULT / "AIOS" / "generated" / "git-status.md"
 
 NEVER_COMMIT = ("Privat/",)
+
+GIT_MISSING_MSG = ("git isn't installed on this machine — version history is off. "
+                   "Install git (Debian/Ubuntu/Mint: sudo apt install git), then run "
+                   "this script again. Nothing else in the vault needs it.")
+GIT_IDENTITY_HINT = ("\n\n  ← git doesn't know who you are yet. Run these two lines once, "
+                     "with your own name and email, then run this script again:\n"
+                     '        git config --global user.name "Your Name"\n'
+                     '        git config --global user.email "you@example.com"')
 
 
 def git(*args, timeout=120):
@@ -145,7 +154,8 @@ def collect() -> dict:
     }
 
     if not (VAULT / ".git").exists():
-        s["errors"].append("no git repo here yet — run this script once to create one")
+        s["errors"].append(GIT_MISSING_MSG if shutil.which("git") is None
+                           else "no git repo here yet — run this script once to create one")
         return s
 
     lock_note = clear_stale_lock()
@@ -228,7 +238,9 @@ def snapshot(push=True) -> dict:
         stamp = dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         rc, _, err = git("commit", "-m", f"vault snapshot: {stamp}")
         if rc != 0 and "nothing to commit" not in (err or "").lower():
-            s["errors"].append(f"git commit failed: {err}")
+            low = (err or "").lower()
+            hint = GIT_IDENTITY_HINT if ("identity unknown" in low or "tell me who you are" in low) else ""
+            s["errors"].append(f"git commit failed: {err}{hint}")
             return s
         s["committed"] = s["dirty_files"]
 
@@ -258,6 +270,8 @@ def snapshot(push=True) -> dict:
 
 def verdict(s: dict) -> tuple:
     if s["errors"] and not s.get("repo_ok", True):
+        if shutil.which("git") is None:
+            return "NOT SET UP", GIT_MISSING_MSG
         return "NOT SET UP", "No git repo yet — run this script once to create one."
     if s["errors"]:
         return "BROKEN", "The vault is NOT fully backed up by git."

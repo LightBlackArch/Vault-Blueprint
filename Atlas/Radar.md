@@ -17,9 +17,9 @@ flips to `in progress`.
 Filled automatically by `auto-capture`. Mention something in passing and it lands
 here without you asking.
 
-| Thing | Type | Status | Where it came from | Added |
-|---|---|---|---|---|
-| | | | | |
+| Added | Thing | Type | Why | Where it came from | Status |
+|---|---|---|---|---|---|
+<!-- New rows go above this line (capture.py --radar inserts them here) -->
 
 Status: `want to check out` · `in progress` · `done` · `dropped`
 

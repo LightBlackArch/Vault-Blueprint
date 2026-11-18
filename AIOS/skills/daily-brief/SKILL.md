@@ -15,7 +15,8 @@ Get today's real date — check it, don't assume.
 
 If the file doesn't exist, create it from `AIOS/templates/daily-note.md`.
 If it exists, **fill in the Brief section only. Never touch anything below
-`## Diary`.**
+`## Diary`.** If today's Brief is already written, say so in one line and
+stop — rewrite it only when asked to redo it.
 
 ## What goes in the brief
 

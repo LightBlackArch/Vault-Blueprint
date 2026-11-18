@@ -26,7 +26,7 @@ yourself up"**, which runs the `setup-vault` skill end to end (scripts,
 skills, the interview, and a self-check) without needing anything else typed
 first. Working from an unfilled `me.md` means working with no rules at all.
 
-**If you can't confirm the six skills in `AIOS/skills/` are active as real,
+**If you can't confirm the seven skills in `AIOS/skills/` are active as real,
 natively-triggering skills on this platform** (this is normal on Cowork —
 see `AIOS/skills/README.md`), **read `AIOS/skills/auto-capture/SKILL.md`,
 `AIOS/skills/vault-first/SKILL.md`, `AIOS/skills/vault-librarian/SKILL.md`

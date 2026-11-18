@@ -45,6 +45,28 @@ tags:
 | `chronicle.py` | Builds a curated write-up from an already-backed-up chat, instead of retyping the conversation. |
 | `backup-cowork.py` | Copies your local Claude/Cowork chat history into the vault, readable and raw. Must run on your own machine. |
 | `vault-snapshot.py` | Optional git commit + push of the whole vault, independent of Obsidian being open. |
+| `vault.py` | The one command (`python3 vault ...`): six verbs — `find`, `links`, `remember`, `recent`, `check`, `update` — each just runs one of the scripts below. |
+| `search.py` | Finds a note by what you mean, ranked, in about a second with no AI. `--semantic` also matches by meaning when Ollama is running locally. |
+| `graph.py` | Answers "what connects to what" from the `[[wikilinks]]` between notes — hubs, shortest path, orphans, missing links. Nothing sent anywhere, zero AI cost. |
+| `dream.py` | Turns a correction you keep making into a rule: signalled three times it is confirmed in `AIOS/generated/learned-rules.md`; unused rules fade and expire. |
+| `session-digest.py` | One line per past Claude Code session for this vault (first request, files edited) in `AIOS/generated/sessions.md`, so a new session can pick up where the last stopped. |
+| `mcp-server.py` | Lets another MCP-capable AI app use this vault's search, links, session history and learned rules. Local, no network. |
+| `selftest-all.py` | Compiles every script and runs each one's `--selftest` on throwaway data. Exit 1 if anything fails. |
+| `catalog.py` | Rebuilds `AIOS/generated/catalog.md` — everything you watch, read, play or own, plus worlds and purchases, in one greppable file. |
+| `shot.py` | Stamps a screenshot: copies it into `AIOS/history/screenshots/`, embeds what it shows inside the image, writes a sidecar note and an index row. |
+| `video.py` | Prints a video's real transcript (cached in `AIOS/history/transcripts/`) or fails loudly — an unwatchable video is an error, never a guess from the title. |
+| `hook-video.py` | A hook that runs `video.py` on every pasted video link before the model reads your message. `--install-hook` wires it in. |
+| `link.py` | Saves every URL you send as its own note in `Atlas/Links/` with the page's real title; `--find`, `--list`, `--check` for dead links. |
+| `person.py` | One note per family member, friend or teacher in `Atlas/People/`; creates it on first mention, appends dated facts after. |
+| `cooldowns.py` | `--check` / `--upcoming N` on `Calendar/Cooldowns.md` — computes days left and flags what has unlocked. |
+| `money.py` | Logs a transaction or sets a real balance in the money note's ledger, and flags drift against what it predicted. |
+| `screentime.py` | Logs a day's screen time and sleep; `--avg` for the rolling average, `--check` for a warning only when a threshold is crossed. |
+| `accounts-audit.py` | Ages the "needs action" table in the online-accounts note and flags anything unverified for 14+ days. Cannot read your inbox itself. |
+| `machine-snapshot.py` | Appends a dated disk/RAM reading to `AIOS/history/machine-snapshots.md`, so "is it still filling up" is a trend. |
+| `facts-check.py` | Keeps facts that change with the calendar current — starting with your age in `me.md` — and fixes that spot itself. |
+| `weekly-digest.py` | Pulls one week's `## Changes` lines and checkboxes into a digest for the `weekly-review`, instead of opening seven daily notes. |
+| `backup-claude-code.py` | Copies Claude Code CLI session transcripts into `AIOS/history/chat-history/claude-code/`. Must run on your own computer. |
+| `capture-heartbeat.py` | Flags when chat activity synced but today's `## Changes` got zero entries for 45+ minutes. Mechanical, no reasoning. |
 | `blueprint-update.py` | Pulls improvements from the Vault Blueprint into this vault, as a list of yes/no questions. |
 | `blueprint-manifest.py`, `blueprint-release.py` | Blueprint-side tooling for regenerating and releasing the blueprint itself — not relevant to a downstream vault. |
 | `scriptlog.py` | Shared run-history logger, imported by other scripts — not run directly. Appends to `AIOS/history/scripts/<name>.md` on every run. |

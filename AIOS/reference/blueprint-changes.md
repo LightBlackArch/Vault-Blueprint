@@ -57,6 +57,153 @@ are.
 
 ## Changes
 
+### id: instructions-count-fixes
+title: Two small counts in the setup instructions were wrong and are fixed
+files: CLAUDE.md, AIOS/scripts/setup.py
+needs: nothing
+
+The instructions your AI reads said six skills ship with the vault; there are
+seven. The setup script's own description listed five scheduled jobs when it
+actually sets up six. Nothing behaves differently, your AI just stops reading
+the wrong number. `CLAUDE.md` is one of the files that's half yours, so your
+AI merges that one word by hand.
+
+### id: snapshot-clear-git-messages
+title: The version-history backup now says plainly what's wrong and how to fix it
+files: AIOS/scripts/vault-snapshot.py
+needs: nothing
+
+If git (the free program that keeps a full history of your notes) isn't
+installed, the snapshot now says exactly that and gives the install command,
+instead of telling you to "run this script once" when you just did. If git is
+installed but doesn't know your name yet, the error now includes the two lines
+to type once to fix it. When it runs and what it saves are unchanged.
+
+### id: radar-capture-fresh-vault
+title: The "things I want to check out" list now accepts new items from day one
+files: AIOS/scripts/capture.py, Atlas/Radar.md
+needs: nothing
+
+In a brand-new vault, asking your AI to add something to the Radar list
+failed with "has lost its marker": the list shipped without the hidden line
+that tells the script where new rows go, and its columns didn't match what the
+script writes. The list now has both, and the script's help names the allowed
+types and statuses. If you already use your own Radar list, your AI merges
+this carefully and keeps every row you have.
+
+### id: me-md-troubleshooting-and-answer-habits
+title: Three more default habits for how your AI works with you
+files: AIOS/me.md
+needs: nothing
+
+Three new lines in the "how to work with me" template. When something is
+broken, your AI looks at the cheap evidence first (the app's own logs, what
+the system reports, what changed since it last worked) before digging into
+source code. It no longer tells you something "doesn't exist" just because a
+local package search or its own memory came up empty. And after a long
+research job it gives you the answer first, then the result in six lines or
+fewer, with the details saved in a note instead of piled above the answer.
+
+### id: daily-brief-no-rewrite
+title: The daily brief no longer rewrites itself if today's is already done
+files: AIOS/skills/daily-brief/SKILL.md
+needs: nothing
+
+If you ask for the brief twice in a day, your AI now tells you in one line
+that today's is already written and stops, instead of writing it again. Say
+"redo the brief" when you actually want it rewritten.
+
+### id: skill-map-taste-and-selftest-rows
+title: Two scripts that already ship are now listed in the tooling map
+files: AIOS/skill-map.md
+needs: nothing
+
+The tooling map now lists the script that keeps a one-file summary of
+everything you like and dislike (`taste.py`), and the script that checks that
+every other script still runs (`selftest-all.py`). Both were already in your
+vault but nothing told your AI they were there, so it could not reach for
+them.
+
+### id: naming-allowlist-format
+title: The duplicate-note check now says how to silence a false alarm
+files: AIOS/reference/naming.md
+needs: nothing
+
+When the check flags two notes as possible duplicates but they really are
+different things, you add a row to a small table. The page now says exactly
+what that row has to look like: two note paths in backticks, one pair per
+row. A row written any other way is silently ignored, which is why the alarm
+kept firing.
+
+### id: vault-map-cooldowns-and-generated-files
+title: The vault map now covers waiting periods and two generated files
+files: AIOS/vault-map.md
+needs: nothing
+
+Adds a folder row and a "where do I look" row for `Calendar/Cooldowns.md`,
+the list of waiting periods you're inside (a trial, a lockout, a returns
+window) with the exact day each one unlocks. Also names two generated files
+the map was missing: the list of corrections that stuck, and the one-line
+digest of past Claude Code sessions. It also now says the raw-chat folder is
+only filled if you run the backup with `--raw`.
+
+### id: setup-catalog-complete
+title: The script catalogue now lists every script in your vault
+files: AIOS/reference/setup.md
+needs: nothing
+
+The catalogue page is meant to say what each script does, but twenty-two of
+them were missing from it, so your AI had to open each file to find out.
+They're all in now, one plain line each: search, the link graph, saving
+links and videos, screenshots, money and screen-time logs, backups, and the
+rest.
+
+### id: diary-duplicate-guard
+title: The diary stops you writing the same event twice
+files: AIOS/scripts/diary.py
+needs: nothing
+
+If you (or your AI) mention the same thing in two chats — "the parcel arrives
+Saturday" — it used to be written into your diary twice. Now the diary
+checks the last three days first and, if a line already says the same thing,
+refuses to add another and shows you the line that's there. If it really is
+a different event, add `--force` to write it anyway. It also fixes a link at
+the top of the generated events index that pointed at a note a new vault
+doesn't have yet, which made the vault check complain after your first diary
+entry.
+
+### id: logchange-unrecorded-image-warning
+title: Saving to the vault now warns about pictures with no note, and keeps two lists up to date
+files: AIOS/scripts/logchange.py
+needs: nothing
+
+A picture copied into the vault by hand has no note saying what it shows or
+where it came from, so a month later nobody knows. Now every time anything is
+saved to the vault, you get a warning listing any picture that has no note
+next to it, plus the one command that fixes each one. It only warns — it never
+blocks anything or moves any file.
+
+Two smaller fixes ride along in the same script. Saving a note under
+`Atlas/Media/`, `Atlas/Worlds/`, a purchase project, or your money note now
+rebuilds your "what I play, watch and read" list on the spot, instead of only
+when you remembered to run its script. And the warning that your
+always-loaded files got too big now reads its list of which files count from
+the size-checking script, so it can't drift out of date.
+
+### id: claude-code-backup-raw-opt-in
+title: Chat backups no longer copy the huge raw files unless you ask
+files: AIOS/scripts/backup-claude-code.py
+needs: nothing
+
+The Claude Code backup used to save every chat twice: once as readable text
+and once as the raw original files. The raw copies grow to gigabytes in a busy
+vault and can fill a free cloud-sync plan. Now only the readable text is
+saved by default. **This changes the default for everyone who already uses
+the backup:** from now on it saves the readable text only, and the raw
+originals are only copied if you run the backup with `--raw`. Raw copies you
+already have are left alone. The chat index it writes also no longer links to
+a Cowork index that may not exist on your machine.
+
 ### id: python-optional
 title: Tell your AI that Python is optional
 files: CLAUDE.md
@@ -95,7 +242,6 @@ just runs the script that already did the job, so nothing changed underneath and
 the old commands still work. Listing your learned rules before you have any now
 tells you how to add one instead of printing nothing.
 
-
 ### id: search-on-a-real-index
 title: Search uses a proper full-text index and the empty Privat folder is no longer shipped
 files: AIOS/scripts/search.py
@@ -109,7 +255,6 @@ counts more than its body, and if the index is ever damaged it simply rebuilds.
 If your Python lacks full-text support it falls back to the older, simpler
 index. The blueprint also stopped shipping an empty `Privat/` placeholder
 folder; if you have your own, every script still skips it exactly as before.
-
 
 ### id: tested-scripts-faster-search-rule-review
 title: Everything is tested in one command, search stays fast, and learned rules wait for your OK
@@ -129,7 +274,6 @@ that reached "confirmed" is now listed as "not yet reviewed" until you pin it, s
 nothing becomes a standing rule without you seeing it. Nothing in your own notes
 is touched.
 
-
 ### id: mcp-server-and-ai-links
 title: Other AI tools can use your vault, rewording counts as the same rule, and an optional AI link-suggester
 files: AIOS/scripts/mcp-server.py, AIOS/scripts/graph.py, AIOS/scripts/search.py, AIOS/scripts/dream.py
@@ -146,7 +290,6 @@ delete stuff without asking" add up together instead of splitting).
 `graph.py ai "Note"` asks your own `claude` command which notes a note should
 link to even when it never names them. It only prints suggestions and writes
 nothing, and it does nothing unless you call it.
-
 
 ### id: search-and-link-suggestions
 title: Ranked search (optionally by meaning) and "you mention this but never linked it"
@@ -175,7 +318,6 @@ files they changed, so it can pick up where the last one stopped. This file
 holds your own wording, so a script never writes it: your AI adds the one
 sentence by hand when you accept this.
 
-
 ### id: memory-graph-rules-sessions
 title: Three new tools - remember what you keep correcting, see how notes connect, recall past sessions
 files: AIOS/scripts/dream.py, AIOS/scripts/graph.py, AIOS/scripts/session-digest.py
@@ -191,7 +333,6 @@ already wrote, in about a second. `session-digest.py` turns your past Claude
 Code sessions into one readable line each (what you asked, which files changed),
 so a new session can pick up where the last stopped. Nothing runs by itself and
 nothing in your own notes is touched; you call them when you want them.
-
 
 ### id: updater-stops-re-asking
 title: Updating stops re-asking old changes, and a fresh copy checks clean

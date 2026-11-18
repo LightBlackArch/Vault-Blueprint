@@ -54,6 +54,10 @@ Pairs that look like a naming collision to `route-check.py --dupes` but
 really are two different things. Add a row here instead of just ignoring the
 warning — a check that cries wolf forever is a check nobody reads.
 
+**Format:** two backticked `.md` paths on one row — that is all the check
+reads, so the reason column is for humans. Each pair needs its own row;
+a wildcard row is readable by you but never silences the check.
+
 | Note A | Note B | Why they're different |
 |---|---|---|
 | _(none yet)_ | | |

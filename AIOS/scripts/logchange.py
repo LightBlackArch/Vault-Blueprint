@@ -45,6 +45,11 @@ nothing the rest of the time. All report; none of them block a write.
      index
   9. connect_events()         — an event note gets linked into the days it
      covers, whenever anything under Calendar/Events/ is written
+ 10. nag_unregistered_images() — any image with no sidecar note; the fix is
+     one `shot.py` command
+ 11. refresh_catalog()        — AIOS/generated/catalog.md, rebuilt whenever a
+     write touches Atlas/Media/, Atlas/Worlds/, a `*Purchase*` project note
+     or Money.md
 
 Every guard checks whether its target script actually exists before running
 it, so removing a script from AIOS/scripts/ just quietly disables the guard
@@ -209,6 +214,82 @@ def append_lines(lines: list[str], now: dt.datetime) -> Path:
 # about, and only if its target script is actually present in this vault.
 # ---------------------------------------------------------------------------
 
+IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".bmp", ".heic"}
+# Not "history": a bare entry here once pruned AIOS/history/screenshots/, the
+# exact folder this guard exists to police. Add your own code projects here —
+# their app icons are build assets, not pictures worth a record.
+SKIP_DIRS = {"Privat", ".git", ".obsidian", ".trash", ".claude", "skills",
+             "node_modules", "dist"}
+
+
+def nag_unregistered_images() -> None:
+    """Shout, on every vault write, about images that have no record.
+
+    A picture copied into the vault by hand has no note saying what it shows
+    or where it came from, and a rule in a file read once per session does not
+    survive the session. This runs on every write, so the warning can't be
+    missed. Cheap on purpose: it only asks whether the sidecar note exists.
+    Reports only — never blocks a write."""
+    orphans = []
+    for dirpath, dirnames, filenames in os.walk(VAULT):
+        dirnames[:] = [d for d in dirnames
+                       if d not in SKIP_DIRS and not d.startswith(".")]
+        for fn in sorted(filenames):
+            p = Path(dirpath) / fn
+            if p.suffix.lower() in IMAGE_EXTS and not p.with_suffix(".md").exists():
+                orphans.append(p.relative_to(VAULT))
+    if not orphans:
+        return
+    print("", file=sys.stderr)
+    print(f"logchange: !! {len(orphans)} image(s) in the vault have no record "
+          f"of what they show or where they came from:", file=sys.stderr)
+    for p in orphans[:10]:
+        print(f"  - {p}", file=sys.stderr)
+    if len(orphans) > 10:
+        print(f"  ... and {len(orphans) - 10} more", file=sys.stderr)
+    print('logchange: fix each one now, in this turn:\n'
+          '  python3 AIOS/scripts/shot.py "<image>" --keep-name '
+          '--shows "what it shows" --chat "<chat name>" --chat-id <id>\n'
+          "logchange: that one command writes the sidecar note, embeds the "
+          "facts in the file, and adds the row to Screenshots.md.",
+          file=sys.stderr)
+
+
+CATALOG_TRIGGER_PREFIXES = ("Atlas/Media/", "Atlas/Worlds/")
+CATALOG_TRIGGER_RE = re.compile(r"^Efforts/.*Purchase.*\.md$")
+CATALOG_TRIGGER_EXACT = {"Atlas/About Me/Money.md"}
+
+
+def refresh_catalog(paths: list[str]) -> None:
+    """Rebuild AIOS/generated/catalog.md whenever a write touches a
+    game/anime/show note, a world/server note, a purchase-decision project, or
+    the money ledger. Pure extraction from structured frontmatter, so it can't
+    drift. Reports only."""
+    touched = False
+    for p in paths:
+        if not p:
+            continue
+        r = rel_path(p)
+        if r.startswith(CATALOG_TRIGGER_PREFIXES) or r in CATALOG_TRIGGER_EXACT \
+                or CATALOG_TRIGGER_RE.match(r):
+            touched = True
+            break
+    if not touched:
+        return
+    script = VAULT / "AIOS" / "scripts" / "catalog.py"
+    if not script.exists():
+        return
+    try:
+        r = subprocess.run([sys.executable or "python3", str(script)],
+                           capture_output=True, text=True, timeout=60)
+        out = (r.stdout or "").strip()
+        if "rewrote" in out:
+            print(f"logchange: {out}")
+    except Exception as e:
+        print(f"logchange: couldn't refresh AIOS/generated/catalog.md ({e})",
+              file=sys.stderr)
+
+
 def refresh_vault_map(paths: list[str], kinds: list[str]) -> None:
     """Keep the note count in `AIOS/generated/scale.md` true without anybody
     retyping it. Only fires when a note was created or deleted."""
@@ -228,11 +309,27 @@ def refresh_vault_map(paths: list[str], kinds: list[str]) -> None:
               file=sys.stderr)
 
 
+def _boot_files() -> list[str]:
+    """The always-loaded set, read from context-budget.py so it can't drift.
+
+    Falls back to a hardcoded copy if the import fails, because a broken
+    guard must not break logging."""
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "context_budget", VAULT / "AIOS" / "scripts" / "context-budget.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return list(mod.BOOT_FILES)
+    except Exception:
+        return ["CLAUDE.md", "AIOS/me.md", "AIOS/character.md", "AIOS/vault-map.md",
+                "AIOS/skill-map.md", "Atlas/About Me/Working with AI.md"]
+
+
 def check_boot_budget(paths: list[str]) -> None:
     """Shout if a write to an always-loaded file grew the session floor.
     Reports only — never blocks or reverts a write."""
-    boot = ["CLAUDE.md", "AIOS/me.md", "AIOS/character.md", "AIOS/vault-map.md",
-            "AIOS/skill-map.md", "Atlas/About Me/Working with AI.md"]
+    boot = _boot_files()
     touched = any(
         p and (rel_path(p) in boot or rel_path(p).startswith("AIOS/skills/"))
         for p in paths
@@ -490,6 +587,7 @@ def main() -> None:
         print(f"logchange: {line}")
     print(f"logchange: written to {note.relative_to(VAULT)}")
 
+    nag_unregistered_images()
     refresh_vault_map(touched_paths, touched_kinds)
     check_boot_budget(touched_paths)
     refresh_where_index(touched_paths, touched_kinds)
@@ -497,6 +595,7 @@ def main() -> None:
     check_canon_after_correction(touched_paths)
     refresh_commands_index(touched_paths)
     refresh_taste_profile(touched_paths)
+    refresh_catalog(touched_paths)
     refresh_happened_index()
     connect_events(touched_paths)
 

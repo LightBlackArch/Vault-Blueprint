@@ -41,6 +41,11 @@ USAGE:
 
 Every write rebuilds happened.md, so the index can never drift from the
 notes. No dependencies. Plain stdlib.
+
+DUPLICATES: before writing, it looks for a near-identical line within the last
+three days and, if it finds one, refuses: prints "NOT written, already
+recorded", leaves the note alone and exits 3. Add `--force` when it really is
+a different event.
 """
 
 import argparse
@@ -149,12 +154,55 @@ def clean_entry_text(text: str) -> str:
     return flat
 
 
-def add_entry(text: str, d: dt.date, dry: bool) -> str:
+class DuplicateEntry(ValueError):
+    pass
+
+
+_STOP = {"about", "after", "again", "being", "because", "could", "didnt", "doesnt",
+         "going", "their", "there", "these", "they", "this", "that", "with", "would",
+         "which", "while", "where", "today", "yesterday", "tomorrow"}
+
+
+def _sig(text: str) -> set[str]:
+    """Distinctive tokens: 5+ chars (dates and hyphenated words stay whole), no filler."""
+    return {w for w in re.findall(r"[\w][\w-]*", text.lower())
+            if len(w) >= 5 and w not in _STOP}
+
+
+def find_duplicate(text: str, d: dt.date, days: int = 3) -> str | None:
+    """An existing Diary line (this day or the 2 before) that says the same thing.
+
+    Same normalized text, or >=2 shared distinctive tokens covering >=25% of the
+    shorter line. Exists because the same event ("the parcel arrives Saturday")
+    gets mentioned in two chats and logged twice. Blocks, doesn't merge:
+    `--force` overrides.
+    """
+    new = _sig(text)
+    flat = re.sub(r"\W+", " ", text.lower()).strip()
+    for back in range(days):
+        p = day_path(d - dt.timedelta(days=back))
+        if not p.exists():
+            continue
+        for _t, _m, old in section_entries(p.read_text(encoding="utf-8"), "Diary"):
+            if re.sub(r"\W+", " ", old.lower()).strip() == flat:
+                return old
+            both = new & _sig(old)
+            small = min(len(new), len(_sig(old))) or 1
+            if len(both) >= 2 and len(both) / small >= 0.25:
+                return old
+    return None
+
+
+def add_entry(text: str, d: dt.date, dry: bool, force: bool = False) -> str:
     text = clean_entry_text(text)
     if not text:
         raise ValueError("refusing to write an empty diary entry")
 
     line = f"- {text}"
+    if not force:
+        dup = find_duplicate(text, d)
+        if dup:
+            raise DuplicateEntry(dup)
     if dry:
         return line
 
@@ -312,7 +360,7 @@ def rebuild(dry: bool = False) -> dict:
         "> Rebuilt by `python3 AIOS/scripts/diary.py --rebuild`, and automatically on",
         "> every vault write. Anything typed in here is gone on the next rebuild.",
         "",
-        "**Never add this to the boot set.** Like [[where]], it exists to be *searched*,",
+        "**Never add this to the boot set.** Like `where.md`, it exists to be *searched*,",
         "not loaded. **This file is a pointer, not storage** — it says *which day*, the",
         "daily note says what actually happened.",
         "",
@@ -456,6 +504,7 @@ def main() -> int:
     ap.add_argument("--list", action="store_true", help="print recent events")
     ap.add_argument("--last", type=int, default=15, help="how many, with --list")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--force", action="store_true", help="write even if a similar line exists")
     args = ap.parse_args()
 
     if args.when:
@@ -489,7 +538,11 @@ def main() -> int:
         return 2
 
     try:
-        line = add_entry(args.text, d, args.dry_run)
+        line = add_entry(args.text, d, args.dry_run, args.force)
+    except DuplicateEntry as e:
+        print(f"diary: NOT written, already recorded: {e}\n"
+              f"       (--force if it really is a different event)", file=sys.stderr)
+        return 3
     except ValueError as e:
         print(f"diary: {e}", file=sys.stderr)
         return 2

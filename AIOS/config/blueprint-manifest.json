@@ -65,14 +65,14 @@
       "sha256": "f85ebcdedefa494b3e4afabcfdb7e499506237e83d8cb173d81f6a301d6ce267"
     },
     "AIOS/me.md": {
-      "bytes": 9784,
+      "bytes": 10442,
       "class": "brain",
-      "sha256": "0ca582caf44f59677077a202dc45cf4f9ec607a5b9cc39e045238c910f16f8dd"
+      "sha256": "fbee9379bd5473f0be61515551f8165ad93f58f0a3aa99fa3c0b3b4954897469"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 36964,
+      "bytes": 43990,
       "class": "system",
-      "sha256": "bfdfc130d7b6ebcbc629dc2cabaf051bd0ccbdb3e9291a3bd29e0a4744ddca8f"
+      "sha256": "85fb18b3577db64d63e8bf21eb67cbb6dad07625f9275c7b5ed71ea6c564b200"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -90,9 +90,9 @@
       "sha256": "0592552fe91d0d3f33e64d0a8adf57b71f85385173de955fea9ad1b6b9337ca6"
     },
     "AIOS/reference/naming.md": {
-      "bytes": 2637,
+      "bytes": 2850,
       "class": "system",
-      "sha256": "2cedc8383db72cf3f2089d9e364f96ee8f2d1a136b306626b7d41cd1e8544a2a"
+      "sha256": "6616a021cc14d55d21697dc9e4f0b498837a83d4a3706d93e40df71f39e97379"
     },
     "AIOS/reference/routines.md": {
       "bytes": 13234,
@@ -100,9 +100,9 @@
       "sha256": "85fa244fc5992f87b612e79a92525bb8060e4e9452afef0d046a37ecff5f2cbb"
     },
     "AIOS/reference/setup.md": {
-      "bytes": 5594,
+      "bytes": 8943,
       "class": "system",
-      "sha256": "3317b54343fa081a01434b1d136447c4d2b58d508bfeabc150948c79a057c578"
+      "sha256": "9d897959b1ae90c4a5212824d6917e6d2beebdceb904a2862c6cf908fd88ecbf"
     },
     "AIOS/reference/vault-conventions.md": {
       "bytes": 5374,
@@ -115,9 +115,9 @@
       "sha256": "ccba2e76ba5273a0840c3f7dfb6ccffc1316d37df3cf76a88cbcce8f4bb53a8d"
     },
     "AIOS/scripts/backup-claude-code.py": {
-      "bytes": 14035,
+      "bytes": 14486,
       "class": "system",
-      "sha256": "25b1ac107056bcd4d250316168471e2d8fc6da87392e24e32d35aaef99ba7425"
+      "sha256": "f9bae6e23652208c6f4c49fa89cc597fe29c6a950ee7b7d8d1835dec578451d0"
     },
     "AIOS/scripts/backup-cowork.py": {
       "bytes": 13954,
@@ -150,9 +150,9 @@
       "sha256": "f506d0b70215dd1937d132ce4437e6640eccf0376caeabf8eae793940f10bce9"
     },
     "AIOS/scripts/capture.py": {
-      "bytes": 16061,
+      "bytes": 16241,
       "class": "system",
-      "sha256": "6ab81df2fd085013b76de8f16e88f8a5d33fe2a074610f5bc35389d430b7c46a"
+      "sha256": "508aaafb84357d2ea1da402da9173ccae7bdf439491606d73e1acd94ed964641"
     },
     "AIOS/scripts/catalog.py": {
       "bytes": 10704,
@@ -185,9 +185,9 @@
       "sha256": "e862a6a108d96e9584ca616b3fdcc0f9885704709bf37ff6c56807cd328e284f"
     },
     "AIOS/scripts/diary.py": {
-      "bytes": 18858,
+      "bytes": 21061,
       "class": "system",
-      "sha256": "24c63c95a07e4fe37fce24f4d4f0a35450ed1584baf3019422d096b8211bbb14"
+      "sha256": "592428f192ba907c1007ec2807fffd5be8f5819e69a6b7d35e92880d9adf00b7"
     },
     "AIOS/scripts/dream.py": {
       "bytes": 12369,
@@ -220,9 +220,9 @@
       "sha256": "beccfd45564270b7ec3433c80ab76b8e285362a7c0c067d1a7b8c4b1b391d540"
     },
     "AIOS/scripts/logchange.py": {
-      "bytes": 20590,
+      "bytes": 24823,
       "class": "system",
-      "sha256": "29426a6490ee5edd3e4710b4fd168c60946bbed3a12f0a62d4c43ef80652f888"
+      "sha256": "71f9154b3ba498137f5b7de1840684239365c326dc4b41809d0167560bc33885"
     },
     "AIOS/scripts/machine-snapshot.py": {
       "bytes": 6128,
@@ -315,9 +315,9 @@
       "sha256": "d8aa936e98f96e3f9d7a6f542347cb2417db37eb8919cd141979e2c2d8421cfc"
     },
     "AIOS/scripts/setup.py": {
-      "bytes": 10016,
+      "bytes": 10158,
       "class": "system",
-      "sha256": "695925df5cac8e4a52a714ecd31641f6ef0f38032db366155b9bcdb864de4db6"
+      "sha256": "fea1f514122e2a699f2bce903127f87e8b8d481b0366784973c44d8c29aa89fd"
     },
     "AIOS/scripts/shot.py": {
       "bytes": 26040,
@@ -345,9 +345,9 @@
       "sha256": "a98466516dd5800a8e932773cfea961ff2f7cc807302a3f380daee91c500aff2"
     },
     "AIOS/scripts/vault-snapshot.py": {
-      "bytes": 14973,
+      "bytes": 15891,
       "class": "system",
-      "sha256": "2336893dce9a65f0cac8f9d14e28f8c5537bb0e83ad5c8d0363b163b3cbfdb4e"
+      "sha256": "1146fee6f63afaea5deea6fcba6f3251018bb3f8e2a846560ac44083bcf60de8"
     },
     "AIOS/scripts/vault.py": {
       "bytes": 4186,
@@ -375,9 +375,9 @@
       "sha256": "7a6ba6783a03bd07aa56e7530d715c20f69f5ebc4ab854437ec4ef223334c134"
     },
     "AIOS/skill-map.md": {
-      "bytes": 14292,
+      "bytes": 14793,
       "class": "brain",
-      "sha256": "4df2fcf31d47cf04f6b891afb7f2127e81613711d555bf12a5bbb38fcf35175b"
+      "sha256": "b745d72dba03df1cfe76e32a65b1d87fdbd63b4be95849a6f6c439ca2f9fdec5"
     },
     "AIOS/skills/README.md": {
       "bytes": 4519,
@@ -390,9 +390,9 @@
       "sha256": "a69e64e612a30508fbdfbd643747695b185ba8675dd58a66988795bce616d5b5"
     },
     "AIOS/skills/daily-brief/SKILL.md": {
-      "bytes": 4448,
+      "bytes": 4556,
       "class": "system",
-      "sha256": "60988ddc01353df8b43d4dddf8ec1ee2df05d36a1e65f9532089fbdc0990d6ec"
+      "sha256": "bd62180b5beb4f13ad777249114875d19273ed890f9914d1d7896f0f1500531e"
     },
     "AIOS/skills/no-bullshit/SKILL.md": {
       "bytes": 6680,
@@ -455,9 +455,9 @@
       "sha256": "7c91ff6b47f4b08bf77b3a590e7f02bb1fa6664017172964eb6b747de6b87f7c"
     },
     "AIOS/vault-map.md": {
-      "bytes": 16115,
+      "bytes": 16758,
       "class": "brain",
-      "sha256": "8fb090b422f5443d56c0996c8ffca1fcbde3dbebbb124c17a4ad4ddb14284c09"
+      "sha256": "3353c43db91fedb392241568e374b9552f76b6c937d473d673fe35f55ce67c0c"
     },
     "Atlas/About Me/About Me.md": {
       "bytes": 1579,
@@ -530,9 +530,9 @@
       "sha256": "ed48b74941a94aaaabdabc4eed486abff1184c5e5bc975153e55958c6d11d21e"
     },
     "Atlas/Radar.md": {
-      "bytes": 627,
+      "bytes": 701,
       "class": "seed",
-      "sha256": "773a625ea884eca4b1ecacfd791d03907fc6281d848b72163f55ef00c63156b8"
+      "sha256": "70dcee6ed88363d52220468001d7e06345936a0fe7695ab5f57c4e184d2709d0"
     },
     "Atlas/Reference/My online accounts.md": {
       "bytes": 703,
@@ -560,9 +560,9 @@
       "sha256": "5aca32e70460f62b4d92d0de86b6214d2c079fc7d54adff81f379ea220356f77"
     },
     "CLAUDE.md": {
-      "bytes": 3174,
+      "bytes": 3176,
       "class": "brain",
-      "sha256": "10c15a49da59cf2e66698d85b3298a16c36d924bb175101001c006d774f43e39"
+      "sha256": "8aad165cba1c7604443a46d9a27be85b8b9708701ff992ed8ebf11e21c12bc5a"
     },
     "Calendar/Calendar.md": {
       "bytes": 833,
@@ -660,5 +660,5 @@
       "sha256": "7837e4f927d0421548ead054981327b2b83f14f44917bae1a6824378549658ac"
     }
   },
-  "generated": "2026-10-06T14:28:03"
+  "generated": "2026-11-18T15:08:44"
 }

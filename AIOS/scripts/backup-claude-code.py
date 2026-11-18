@@ -17,15 +17,18 @@ is safe to run as often as you like — unchanged files are skipped.
 
 What it saves
 --------------
+  AIOS/history/chat-history/claude-code/      every session as readable
+                                               Markdown (always)
   AIOS/history/chat-history/claude-code-raw/  every session exactly as Claude
                                                Code stored it (.jsonl), one
-                                               subfolder per project it ran in
-  AIOS/history/chat-history/claude-code/      the same sessions as readable
-                                               Markdown
+                                               subfolder per project — ONLY
+                                               when you pass --raw
 
-Why both: the raw .jsonl is the real backup and cannot lose anything. The
-Markdown is what you'd actually open and read — same reasoning as
-backup-cowork.py.
+Raw copies are off by default: they run to gigabytes in a heavy-use vault, and
+if the vault folder is synced (Dropbox, iCloud, OneDrive) they fill the free
+plan. The raw .jsonl is the one backup that cannot lose anything, so pass --raw
+once if you want it; the Markdown is what you'd actually open and read — same
+reasoning as backup-cowork.py.
 
 Separate script on purpose: Claude Code (the CLI) and Cowork/Claude Desktop
 keep entirely different session stores on disk. This one never touches
@@ -50,8 +53,10 @@ VAULT = Path(__file__).resolve().parent.parent.parent
 DEST_RAW = VAULT / "AIOS" / "history" / "chat-history" / "claude-code-raw"
 DEST_MD = VAULT / "AIOS" / "history" / "chat-history" / "claude-code"
 
-stats = {"raw": 0, "raw_skipped": 0, "md": 0, "md_skipped": 0, "md_failed": 0,
-         "bytes": 0}
+RAW = "--raw" in sys.argv
+
+stats = {"seen": 0, "raw": 0, "raw_skipped": 0, "md": 0, "md_skipped": 0,
+         "md_failed": 0, "bytes": 0}
 
 
 def copy_if_newer(src: Path, dst: Path) -> bool:
@@ -196,10 +201,12 @@ def backup_sessions():
             rel = src.relative_to(pdir)
             parent_session = rel.parts[0] if len(rel.parts) > 1 else ""
 
-            if copy_if_newer(src, DEST_RAW / project / rel):
-                stats["raw"] += 1
-            else:
-                stats["raw_skipped"] += 1
+            stats["seen"] += 1
+            if RAW:
+                if copy_if_newer(src, DEST_RAW / project / rel):
+                    stats["raw"] += 1
+                else:
+                    stats["raw_skipped"] += 1
 
             try:
                 md, n = jsonl_to_markdown(src, project)
@@ -260,7 +267,7 @@ def write_history_index():
         "> [!info] Different tool, same shape as Cowork chats\n"
         "> This is the Claude Code CLI (terminal / IDE sessions) — a separate\n"
         "> session store from the Cowork/Claude Desktop app, see\n"
-        "> [[Cowork chats]].\n\n"
+        "> the Cowork chats index.\n\n"
         "> [!warning] This whole folder is generated. Don't edit anything in it.\n"
         "> Written by `AIOS/scripts/backup-claude-code.py`. Every file here is\n"
         "> overwritten on each run.\n>\n"
@@ -274,7 +281,7 @@ def write_history_index():
         "In Obsidian, restrict a search to just these sessions with:\n\n"
         "```\ntag:#chat-log \"the thing you're looking for\"\n```\n\n"
         "Or exclude them from a normal search with `-tag:#chat-log`.\n\n"
-        "## Related\n\n- [[Cowork chats]] — the other chat backup\n- [[Home]]\n",
+        "## Related\n\n- [[Home]]\n",
         encoding="utf-8")
 
 
@@ -318,21 +325,26 @@ def main() -> int:
 
     print(f"  from: {SRC_PROJECTS}")
     print(f"  to:   {DEST_MD.relative_to(VAULT)}  (readable)")
-    print(f"        {DEST_RAW.relative_to(VAULT)}  (raw, exact)")
+    if RAW:
+        print(f"        {DEST_RAW.relative_to(VAULT)}  (raw, exact)")
     print()
 
-    DEST_RAW.mkdir(parents=True, exist_ok=True)
+    if RAW:
+        DEST_RAW.mkdir(parents=True, exist_ok=True)
     DEST_MD.mkdir(parents=True, exist_ok=True)
     backup_sessions()
     write_history_index()
 
     print("  markdown transcripts . %d new/updated  (%d unchanged, %d failed)"
           % (stats["md"], stats["md_skipped"], stats["md_failed"]))
-    print("  raw files ............ %d new/updated  (%d unchanged)"
-          % (stats["raw"], stats["raw_skipped"]))
-    print("  new data ............. %.2f MB" % (stats["bytes"] / 1048576))
+    if RAW:
+        print("  raw files ............ %d new/updated  (%d unchanged)"
+              % (stats["raw"], stats["raw_skipped"]))
+        print("  new data ............. %.2f MB" % (stats["bytes"] / 1048576))
+    else:
+        print("  raw files ............ skipped (pass --raw to keep exact copies)")
     print()
-    total = stats["raw"] + stats["raw_skipped"]
+    total = stats["seen"]
     if total == 0:
         print("  NOTHING FOUND. Either Claude Code hasn't been used on this")
         print("  machine yet, or it stores sessions somewhere this script")

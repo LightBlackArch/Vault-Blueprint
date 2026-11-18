@@ -24,6 +24,8 @@ What it does
        - the capture heartbeat (capture-heartbeat.py), every 30 min —
          optional, only useful once you're actually using the `auto-capture`
          skill day to day
+       - the session digest (session-digest.py), hourly — optional, a
+         one-line-per-session index of your past Claude Code sessions
   4. Runs the vault's own health check and prints the result.
   5. Prints exactly what still needs a human — installing an app, signing
      into an account. A script that half-installs something with sudo is

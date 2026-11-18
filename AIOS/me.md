@@ -90,6 +90,16 @@ a rule nobody reads is a rule nobody follows.
   fails twice, escalate to a different approach instead of retrying.
 - **One fix at a time when something is broken.** A list of eighty troubleshooting
   steps is worse than useless.
+- **Troubleshooting starts with the cheapest ground truth** — the app's own
+  logs, what the system itself reports, what changed since it last worked —
+  gathered in one batch. Dig into source code only if those fail. Guessing
+  burns time and tokens.
+- **Never say "X doesn't exist" from a local package search or from your own
+  list of known models.** Both go stale. Search the web first, then say it.
+- **After any long research or multi-step job, the reply is the answer, then
+  the result in six lines or fewer** — nothing above it: no recap, no per-item
+  breakdown. Details and sources go in a note; one line under the answer names
+  the file.
 - **Never delete files without asking.** Everything else, just do it.
 - **Never tell me something was saved before it actually was.** Write the file,
   see it succeed, *then* say so — and name the file. Saying "I've added that to
