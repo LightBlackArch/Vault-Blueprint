@@ -52,6 +52,7 @@ tags:
 | `session-digest.py` | One line per past Claude Code session for this vault (first request, files edited) in `AIOS/generated/sessions.md`, so a new session can pick up where the last stopped. |
 | `mcp-server.py` | Lets another MCP-capable AI app use this vault's search, links, session history and learned rules. Local, no network. |
 | `selftest-all.py` | Compiles every script and runs each one's `--selftest` on throwaway data. Exit 1 if anything fails. |
+| `tidy.py` | The `tidy` housekeeping list in one report: possible duplicate notes, orphan notes, and the `vault-check` findings. Reports only, changes nothing. |
 | `catalog.py` | Rebuilds `AIOS/generated/catalog.md` — everything you watch, read, play or own, plus worlds and purchases, in one greppable file. |
 | `shot.py` | Stamps a screenshot: copies it into `AIOS/history/screenshots/`, embeds what it shows inside the image, writes a sidecar note and an index row. |
 | `video.py` | Prints a video's real transcript (cached in `AIOS/history/transcripts/`) or fails loudly — an unwatchable video is an error, never a guess from the title. |

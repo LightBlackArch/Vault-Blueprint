@@ -7,7 +7,7 @@
     "system": "Blueprint owns it. Updated in place unless the user edited it, in which case they're asked."
   },
   "_what": "Every file this blueprint ships, and how much of it belongs to the blueprint versus to the person using it. Read by AIOS/scripts/blueprint-update.py. Generated \u2014 do not hand-edit; change the rules in AIOS/scripts/blueprint-manifest.py instead.",
-  "count": 130,
+  "count": 131,
   "files": {
     ".gitignore": {
       "bytes": 727,
@@ -70,9 +70,9 @@
       "sha256": "fbee9379bd5473f0be61515551f8165ad93f58f0a3aa99fa3c0b3b4954897469"
     },
     "AIOS/reference/blueprint-changes.md": {
-      "bytes": 43990,
+      "bytes": 44561,
       "class": "system",
-      "sha256": "85fb18b3577db64d63e8bf21eb67cbb6dad07625f9275c7b5ed71ea6c564b200"
+      "sha256": "dcc47c0c5516590d69a726384a95963f101b54644f7e0625059af83459459d04"
     },
     "AIOS/reference/canon.md": {
       "bytes": 1195,
@@ -100,9 +100,9 @@
       "sha256": "85fa244fc5992f87b612e79a92525bb8060e4e9452afef0d046a37ecff5f2cbb"
     },
     "AIOS/reference/setup.md": {
-      "bytes": 8943,
+      "bytes": 9106,
       "class": "system",
-      "sha256": "9d897959b1ae90c4a5212824d6917e6d2beebdceb904a2862c6cf908fd88ecbf"
+      "sha256": "52bd22ce5878cad9d2f6d0d7332f3ca6c2294b67d0752095f39c3b19528af1f2"
     },
     "AIOS/reference/vault-conventions.md": {
       "bytes": 5374,
@@ -334,6 +334,11 @@
       "class": "system",
       "sha256": "3d916dfb8ae2c6c89285a132ff10a94fa00e8c736bc4615eafe3ace7e94f4061"
     },
+    "AIOS/scripts/tidy.py": {
+      "bytes": 4132,
+      "class": "system",
+      "sha256": "537d5695173ba00d930c2e85ccee3c533b18d54ee8dc9f2a33f7169b85dffe2a"
+    },
     "AIOS/scripts/vault-check.py": {
       "bytes": 11549,
       "class": "system",
@@ -375,9 +380,9 @@
       "sha256": "7a6ba6783a03bd07aa56e7530d715c20f69f5ebc4ab854437ec4ef223334c134"
     },
     "AIOS/skill-map.md": {
-      "bytes": 14793,
+      "bytes": 14901,
       "class": "brain",
-      "sha256": "b745d72dba03df1cfe76e32a65b1d87fdbd63b4be95849a6f6c439ca2f9fdec5"
+      "sha256": "17b138dc55701ef5c3ecc85c8820c1ec9fac68a01fca181849b2820a3f4f0d74"
     },
     "AIOS/skills/README.md": {
       "bytes": 4519,
@@ -660,5 +665,5 @@
       "sha256": "7837e4f927d0421548ead054981327b2b83f14f44917bae1a6824378549658ac"
     }
   },
-  "generated": "2026-11-18T15:08:44"
+  "generated": "2026-11-18T15:54:29"
 }

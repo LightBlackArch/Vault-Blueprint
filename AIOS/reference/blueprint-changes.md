@@ -57,6 +57,17 @@ are.
 
 ## Changes
 
+### id: tidy-housekeeping-report
+title: Say "tidy" and your AI hands you a housekeeping list
+files: AIOS/scripts/tidy.py
+needs: nothing
+
+Saying "tidy" now gets you one report instead of a hunt through the vault: notes
+that look like duplicates of each other, notes nothing else links to, and broken
+links or bad note headers. It only lists what it found and changes nothing, so
+you pick what to act on. The tooling map and the script catalogue now name it
+too.
+
 ### id: instructions-count-fixes
 title: Two small counts in the setup instructions were wrong and are fixed
 files: CLAUDE.md, AIOS/scripts/setup.py
@@ -122,7 +133,7 @@ The tooling map now lists the script that keeps a one-file summary of
 everything you like and dislike (`taste.py`), and the script that checks that
 every other script still runs (`selftest-all.py`). Both were already in your
 vault but nothing told your AI they were there, so it could not reach for
-them.
+them. The `tidy` row now also says which script does the housekeeping list.
 
 ### id: naming-allowlist-format
 title: The duplicate-note check now says how to silence a false alarm
@@ -155,8 +166,8 @@ needs: nothing
 The catalogue page is meant to say what each script does, but twenty-two of
 them were missing from it, so your AI had to open each file to find out.
 They're all in now, one plain line each: search, the link graph, saving
-links and videos, screenshots, money and screen-time logs, backups, and the
-rest.
+links and videos, screenshots, money and screen-time logs, backups, the new
+housekeeping list (`tidy.py`), and the rest.
 
 ### id: diary-duplicate-guard
 title: The diary stops you writing the same event twice

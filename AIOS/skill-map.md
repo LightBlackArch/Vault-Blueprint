@@ -115,7 +115,7 @@ at session start.
 | `chronicle` / `save-chat` | On request | Curated write-up from an already-backed-up chat. |
 | `migrate` | On request — "make vault migratable" | Refreshes `AIOS/reference/migration.md`'s inventory. |
 | `courier <note>` | On request | Strip personal info, show before it leaves. |
-| `tidy` | On request | Housekeeping list — propose first, change nothing. |
+| `tidy` | On request | Housekeeping list — propose first, change nothing. `python3 AIOS/scripts/tidy.py` runs the duplicate-note, orphan-note and `vault-check` checks as one report. |
 
 ## Adding a routine
 
